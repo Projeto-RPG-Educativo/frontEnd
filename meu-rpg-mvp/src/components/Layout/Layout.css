@@ -1,0 +1,114 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #222;
+  color: #fff;
+}
+
+.layout-header,
+.layout-footer {
+  background-color: #1a1a1a;
+  padding: 1rem;
+  text-align: center;
+}
+
+.layout-content-wrapper {
+  display: flex;
+  flex-grow: 1;
+}
+
+.layout-sidebar {
+  background-color: #333;
+  width: 200px;
+  padding: 1rem;
+  border-right: 1px solid #444;
+}
+
+.layout-main {
+  flex-grow: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-container {
+  min-height: 100vh;
+}
+/* Estilos para as telas do jogo, pode ser movido para arquivos de CSS específicos */
+.class-selection-screen {
+  text-align: center;
+}
+
+.class-cards-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.class-card {
+  background-color: #444;
+  border: 1px solid #555;
+  padding: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.class-card:hover {
+  transform: scale(1.05);
+}
+
+.battle-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.hud {
+  background-color: #444;
+  padding: 15px;
+  border-radius: 8px;
+  width: 300px;
+}
+
+.question-box {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.options-container button,
+.ability-box button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #555;
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.game-over-box {
+  text-align: center;
+}
