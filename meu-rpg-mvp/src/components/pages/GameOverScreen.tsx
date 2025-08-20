@@ -1,5 +1,6 @@
 import React from 'react';
 import Layout from '../Layout/Layout';
+
 interface GameOverScreenProps {
   message: string;
   onRestart: () => void;
