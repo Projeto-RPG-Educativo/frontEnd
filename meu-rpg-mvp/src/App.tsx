@@ -2,11 +2,11 @@
 import { useState, useEffect } from 'react';
 import {
   classDefinitions,
-  questionsDb,
   type ClassName,
   type Player,
   type Enemy,
   type Question,
+  questionsDb,
 } from './GameDataBank';
 import ClassSelectionScreen from './components/pages/ClassSelectionScreen';
 import BattleScreen from './components/pages/BattleScreen';
@@ -164,7 +164,7 @@ const App: React.FC = () => {
   };
   
   // Função para reiniciar o jogo
-  const restartGame = () => {
+  const goToClassSelection = () => {
     setGameState('CLASS_SELECTION');
     setPlayer(null);
     setEnemy({ name: "Goblin da Gramática", hp: 100, maxHp: 100, damage: 20 });
@@ -192,10 +192,11 @@ const App: React.FC = () => {
             onAnswer={handleAnswer}
             onUseAbility={handleUseAbility}
             classDefinitions={classDefinitions}
+            onGoToMenu={goToClassSelection}
           />
         );
       case 'GAME_OVER':
-        return <GameOverScreen message={gameOverMessage} onRestart={restartGame} />;
+        return <GameOverScreen message={gameOverMessage} onRestart={goToClassSelection} />;
       default:
         return null;
     }
