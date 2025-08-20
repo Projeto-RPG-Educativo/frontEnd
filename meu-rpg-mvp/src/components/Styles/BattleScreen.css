@@ -1,0 +1,97 @@
+.battle-screen {
+  /* Usa flexbox para organizar os elementos em uma coluna */
+  display: flex;
+  /* Organiza os itens em uma coluna */
+  flex-direction: column;
+  /* Centraliza os itens horizontalmente */
+  align-items: center;
+  /* Adiciona um espaçamento de 20px entre os elementos */
+  gap: 20px;
+}
+
+/* Estilos para a área principal do jogo (imagem do inimigo, pergunta, etc.) */
+.game-area {
+  /* Usa flexbox para organizar os elementos em uma coluna */
+  display: flex;
+  /* Organiza os itens em uma coluna */
+  flex-direction: column;
+  /* Centraliza os itens horizontalmente */
+  align-items: center;
+  /* Adiciona um espaçamento de 20px entre os elementos */
+  gap: 20px;
+  /* Define a largura máxima */
+  max-width: 600px;
+  /* Garante que a largura ocupe 100% do espaço disponível, até o max-width */
+  width: 100%;
+}
+
+/* Contêiner da imagem do inimigo */
+.enemy-image-container {
+  /* Cor de fundo */
+  background-color: #444;
+  /* Espaçamento interno */
+  padding: 20px;
+  /* Arredonda os cantos */
+  border-radius: 8px;
+  /* Adiciona uma sombra para dar profundidade */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos para a imagem do inimigo */
+.enemy-image {
+  /* Define a largura máxima para 100% do seu contêiner */
+  max-width: 100%;
+  /* Mantém a proporção da imagem */
+  height: auto;
+  /* Arredonda os cantos */
+  border-radius: 4px;
+}
+
+/* Caixa para a pergunta do jogo */
+.question-box {
+  /* Cor de fundo */
+  background-color: #333;
+  /* Espaçamento interno */
+  padding: 20px;
+  /* Arredonda os cantos */
+  border-radius: 8px;
+  /* Alinha o texto ao centro */
+  text-align: center;
+}
+
+/* Contêiner dos botões de opções */
+.options-container {
+  /* Usa flexbox para organizar os elementos */
+  display: flex;
+  /* Organiza os itens em uma coluna */
+  flex-direction: column;
+  /* Adiciona espaçamento entre os itens */
+  gap: 10px;
+  /* Adiciona uma margem superior */
+  margin-top: 15px;
+}
+
+/* Estilos para os botões de opção e habilidade */
+.options-container button,
+.ability-box button {
+  /* Espaçamento interno (padding) */
+  padding: 10px 20px;
+  /* Tamanho da fonte */
+  font-size: 16px;
+  /* Muda o cursor para indicar que é clicável */
+  cursor: pointer;
+  /* Cor de fundo */
+  background-color: #555;
+  /* Remove a borda padrão */
+  border: none;
+  /* Cor do texto */
+  color: #fff;
+  /* Arredonda os cantos */
+  border-radius: 5px;
+}
+
+/* Caixa para a mensagem de fim de jogo */
+.game-over-box {
+  /* Alinha o texto ao centro */
+  text-align: center;
+}
