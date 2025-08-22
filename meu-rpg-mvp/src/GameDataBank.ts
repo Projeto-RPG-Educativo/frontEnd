@@ -1,5 +1,12 @@
-export type ClassName = 'Tank' | 'Mago' | 'Lutador' | 'Ladino' | 'Paladino' | 'Bardo';
+import Tank from './assets/Tank.jpg';
+import Mage from './assets/Mage.jpg';
+import Fighter from './assets/Fighter.jpg';
+import Rogue from './assets/Rogue.jpg';
+import Paladin from './assets/Paladin.jpg';
+import Bard from './assets/Bard.jpg';
 
+
+export type ClassName = 'Tank' | 'Mago' | 'Lutador' | 'Ladino' | 'Paladino' | 'Bardo';
 export interface Player {
   name: string;
   className: ClassName;
@@ -28,12 +35,12 @@ export interface Question {
 
 // Definição das Classes e Banco de Perguntas
 export const classDefinitions = {
-  Tank: { name: 'Tank', description: 'EU AGUENTO - Levanta um escudo que bloqueia o próximo ataque ao errar.', stats: { hp: 150, maxHp: 150, damage: 15 } },
-  Mago: { name: 'Mago', description: 'CLARIVIDÊNCIA - Usa magia para eliminar uma das respostas incorretas.', stats: { hp: 100, maxHp: 100, damage: 25 } },
-  Lutador: { name: 'Lutador', description: 'INVESTIDA - Prepara um ataque poderoso que causa dano extra no próximo acerto.', stats: { hp: 120, maxHp: 120, damage: 20 } },
-  Ladino: { name: 'Ladino', description: 'ROUBO - Usa sua astúcia para conseguir uma dica sobre a resposta.', stats: { hp: 110, maxHp: 110, damage: 20 } },
-  Paladino: { name: 'Paladino', description: 'CURA - Invoca a luz para recuperar 30 pontos de vida.', stats: { hp: 130, maxHp: 130, damage: 18 } },
-  Bardo: { name: 'Bardo', description: 'LÁBIA - Tenta confundir o inimigo com uma pergunta muito difícil. Se acertar, vence o combate instantaneamente.', stats: { hp: 100, maxHp: 100, damage: 15 } },
+  Tank: { name: 'Tank', description: 'EU AGUENTO - Levanta um escudo que bloqueia o próximo ataque ao errar.', stats: { hp: 150, maxHp: 150, damage: 15 }, image: Tank },
+  Mago: { name: 'Mago', description: 'CLARIVIDÊNCIA - Usa magia para eliminar uma das respostas incorretas.', stats: { hp: 100, maxHp: 100, damage: 25 }, image: Mage },
+  Lutador: { name: 'Lutador', description: 'INVESTIDA - Prepara um ataque poderoso que causa dano extra no próximo acerto.', stats: { hp: 120, maxHp: 120, damage: 20 }, image: Fighter },
+  Ladino: { name: 'Ladino', description: 'ROUBO - Usa sua astúcia para conseguir uma dica sobre a resposta.', stats: { hp: 110, maxHp: 110, damage: 20 }, image: Rogue },
+  Paladino: { name: 'Paladino', description: 'CURA - Invoca a luz para recuperar 30 pontos de vida.', stats: { hp: 130, maxHp: 130, damage: 18 }, image: Paladin },
+  Bardo: { name: 'Bardo', description: 'LÁBIA - Tenta confundir o inimigo com uma pergunta muito difícil. Se acertar, vence o combate instantaneamente.', stats: { hp: 100, maxHp: 100, damage: 15 }, image: Bard },
 };
 
 // Banco de dados de perguntas do nosso MVP
