@@ -1,5 +1,3 @@
-import React from 'react';
-
 import './ButtonsMain.css';
 import { useFullscreen } from '../Layout/FullscreenContext';
 

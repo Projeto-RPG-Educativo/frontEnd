@@ -1,6 +1,5 @@
 import React from 'react';
 import { type Player, type Enemy, type Question, type ClassName, classDefinitions } from '../../GameDataBank';
-import Layout from '../Layout/Layout';
 import '../Styles/BattleScreen.css';
 
 
@@ -27,7 +26,6 @@ const BattleScreen: React.FC<BattleScreenProps> = ({
   onGoToMenu,
 }) => {
   return (
-    <Layout>
     <div className="battle-screen">
       <div className="hud enemy-hud">
         <div className="enemy-image-container">
@@ -67,7 +65,6 @@ const BattleScreen: React.FC<BattleScreenProps> = ({
         <button onClick={onGoToMenu}>Voltar ao Menu</button>
       </div>
     </div>
-    </Layout>
   );
 };
 
