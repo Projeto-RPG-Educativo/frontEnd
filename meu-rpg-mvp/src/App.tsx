@@ -1,4 +1,3 @@
-// App.tsx
 import { useState, useEffect } from 'react';
 import {
   classDefinitions,
@@ -8,9 +7,13 @@ import {
   type Question,
   questionsDb,
 } from './GameDataBank';
+
 import ClassSelectionScreen from './components/pages/ClassSelectionScreen';
 import BattleScreen from './components/pages/BattleScreen';
 import GameOverScreen from './components/pages/GameOverScreen';
+import { FullscreenProvider } from './components/Layout/FullscreenContext';
+import Layout from './components/Layout/Layout';
+
 import './index.css';
 
 // Componente principal que gerencia o estado e as telas do jogo.
@@ -202,7 +205,13 @@ const App: React.FC = () => {
     }
   };
 
-  return <div className="app-container">{renderGameScreen()}</div>;
+  return (
+    <FullscreenProvider>
+      <Layout>
+        <div className="app-container">{renderGameScreen()}</div>
+      </Layout>
+    </FullscreenProvider>
+  );
 }
 
 export default App;
