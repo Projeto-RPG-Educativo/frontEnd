@@ -1,24 +1,30 @@
 import React from 'react';
 import './Layout.css';
+import ButtonsMain from '../Buttons/ButtonsMain'; 
+import ButtonsHeader from '../Buttons/ButtonsHeader';
+import { useFullscreen } from './FullscreenContext';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+export default function Layout({ children }: LayoutProps) {
+  // Pega a referência 'mainRef' do contexto
+  const { mainRef } = useFullscreen(); 
+  
   return (
     <div className="layout-container">
       <header className="layout-header">
-        <h1>colocar botoes aqui</h1>
-        {/* Aqui você pode adicionar um menu, status do jogador, etc. */}
+        <ButtonsHeader/>
       </header>
 
-      <div className="layout-content-wrapper">
+      <div className="layout-content-wrapper">  
         <aside className="layout-sidebar">
-         
+          <ButtonsMain/>
         </aside>
         
-        <main className="layout-main">
+        {/* Adiciona a referência 'ref={mainRef}' aqui */}
+        <main className="layout-main" ref={mainRef}>
           {children}
         </main>
       </div>
@@ -30,5 +36,3 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     </div>
   );
 };
-
-export default Layout;

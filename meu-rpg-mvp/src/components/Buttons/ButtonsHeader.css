@@ -1,0 +1,63 @@
+.buttons-header {
+  /* Remove o padding e alinha os botões dentro do layout-header */
+  display: flex;
+  gap: 5px; /* Reduz o espaçamento entre os botões */
+  height: 100%; /* Ocupa a altura total do layout-header */
+}
+
+button {
+  /* Ajusta o tamanho dos botões para o novo layout */
+  width: 70px; /* Largura reduzida */
+  height: 25px; /* Altura reduzida para caber nos 30px */
+  border: none;
+  background-color: #555;
+  color: white;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 8px; /* Reduz o tamanho da fonte */
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.4),
+    0 2px 3px rgba(0, 0, 0, 0.3);
+  position: relative;
+  transition: all 0.1s ease;
+}
+
+/* Efeito 3D (ajustado para o novo tamanho) */
+button::before,
+button::after {
+  content: '';
+  position: absolute;
+  background: #444;
+  border: 1px solid #222;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+button::before {
+  left: -5px;
+  width: 5px;
+  height: 5px;
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+}
+
+button::after {
+  right: -5px;
+  width: 5px;
+  height: 5px;
+  clip-path: polygon(100% 50%, 0 0, 0 100%);
+}
+
+/* Efeito de hover e clique */
+button:hover {
+  filter: brightness(1.2);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.3);
+}
