@@ -75,3 +75,42 @@ button {
 button:hover {
   transform: scale(1.05);
 }
+
+/* Container principal da aplicação */
+.app-container {
+    /* Adicione estilos para centralizar o conteúdo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Ajusta a altura mínima para cobrir a tela */
+    min-height: 100vh;
+}
+
+/* Estilo para a div principal do jogo em tela cheia */
+.app-container:fullscreen {
+    background-color: #000; /* Fundo preto para preencher o espaço restante */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-container:-webkit-full-screen {
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-container:-moz-full-screen {
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-container:-ms-fullscreen {
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

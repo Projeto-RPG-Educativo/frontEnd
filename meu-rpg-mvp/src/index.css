@@ -1,4 +1,4 @@
-body {
+html, body {
   /* Remove margens padrão do navegador */
   margin: 0;
   /* Define a família da fonte */
@@ -11,4 +11,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #222;
   color: #fff;
+   padding: 0;
+  overflow: hidden; /* Evita barras de rolagem em telas pequenas */
+   height: 100%;
+  width: 100%;
+}
+
+/* O box-sizing é crucial para que padding e border não somem ao tamanho do elemento */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }

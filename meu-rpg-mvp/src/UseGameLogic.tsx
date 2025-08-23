@@ -10,7 +10,7 @@ import {
 
 export const useGameLogic = () => {
   // Estado do jogo
-  const [gameState, setGameState] = useState<'CLASS_SELECTION' | 'BATTLE' | 'GAME_OVER'>('CLASS_SELECTION');
+  const [gameState, setGameState] = useState<'MAIN_MENU' | 'CLASS_SELECTION' | 'BATTLE' | 'GAME_OVER'>('MAIN_MENU');
   const [player, setPlayer] = useState<Player | null>(null);
   const [enemy, setEnemy] = useState<Enemy>({
     name: "Goblin da Gramática",
@@ -42,6 +42,8 @@ export const useGameLogic = () => {
     setGameMessage(message);
     setTimeout(() => setGameMessage(null), 3000); // Remove a mensagem após 3 segundos
   };
+
+   
 
   // Função para selecionar a classe e iniciar o jogo
   const handleSelectClass = (className: ClassName) => {
@@ -154,6 +156,10 @@ export const useGameLogic = () => {
     setGameMessage(null);
   };
 
+  const goToClassSelectionFromMenu = () => {
+    setGameState('CLASS_SELECTION');
+  };
+
   // Retorna todos os estados e funções
   return {
     gameState,
@@ -168,5 +174,6 @@ export const useGameLogic = () => {
     handleAnswer,
     goToClassSelection,
     classDefinitions,
+    goToClassSelectionFromMenu
   };
 };
