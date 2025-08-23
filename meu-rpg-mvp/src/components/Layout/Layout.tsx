@@ -14,14 +14,24 @@ export default function Layout({ children }: LayoutProps) {
   
   return (
     <div className="layout-container">
-      <header className="layout-header">
+      
+      <div className="layout-content-wrapper"> 
+        
+       {/* 
+        <header className="layout-header">
         <ButtonsHeader/>
       </header>
-
-      <div className="layout-content-wrapper">  
-        <aside className="layout-sidebar">
+       
+       <aside className="layout-sidebar">
           <ButtonsMain/>
         </aside>
+        
+         <footer className="layout-footer">
+        <p>© 2025 Joguinho dos Cria . Todos os direitos reservados.</p>
+      </footer>
+       */
+      }
+        
         
         {/* Adiciona a referência 'ref={mainRef}' aqui */}
         <main className="layout-main" ref={mainRef}>
@@ -29,10 +39,7 @@ export default function Layout({ children }: LayoutProps) {
         </main>
       </div>
 
-      <footer className="layout-footer">
-        <p>© 2025 Joguinho dos Cria . Todos os direitos reservados.</p>
-        {/* Outras informações como versão do jogo, créditos, etc. */}
-      </footer>
+     
     </div>
   );
 };
