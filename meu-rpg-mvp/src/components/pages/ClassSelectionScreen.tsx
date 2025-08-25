@@ -25,15 +25,21 @@ const ClassSelectionScreen: React.FC<ClassSelectionScreenProps> = ({ onSelectCla
     setSelectedClass(null);
   };
 
+   const classes = Object.values(classDefinitions);
+    const leftClasses = classes.slice(0, 3);
+    const rightClasses = classes.slice(3, 6);
+
   return (
     <div className="select-container-bg">
+
       <div className="selection-title-wrapper">
         <h1 className="selection-title">SOLDIER SELECT</h1>
       </div>
+      
       <div className="main-content-wrapper">
-        {/* Barra lateral de seleção de classe */}
+        {/* Barra lateral esquerda */}
         <div className="class-sidebar">
-          {Object.values(classDefinitions).map(cls => (
+          {leftClasses.map(cls => (
             <div
               key={cls.name}
               className={`class-card ${selectedClass?.name === cls.name ? 'selected' : ''}`}
@@ -42,12 +48,14 @@ const ClassSelectionScreen: React.FC<ClassSelectionScreenProps> = ({ onSelectCla
               <div className="class-image-container">
                 <img src={cls.image} alt={cls.name} className="class-image" />
               </div>
+              
               <div className="class-name-tag">
                 {cls.name}
               </div>
             </div>
           ))}
         </div>
+
         {/* Área de visualização do personagem */}
         <div className="character-display-area">
           {selectedClass && (
@@ -62,12 +70,21 @@ const ClassSelectionScreen: React.FC<ClassSelectionScreenProps> = ({ onSelectCla
                     <p><strong>HP:</strong> {selectedClass.stats.hp}</p>
                     <p><strong>Dano:</strong> {selectedClass.stats.damage}</p>
                   </div>
-                  <div className="character-skills">
-                    <h4>Habilidade Especial:</h4>
-                    <p>{selectedClass.ability}</p>
-                  </div>
                 </div>
               </div>
+
+               {/* Slots de item na parte de baixo */}
+              <div className="item-slots-wrapper">
+                <div className="item-slots-row">
+                  <div className="item-slot weapon-slot"></div>
+                  <div className="item-slot armor-slot"></div>
+                </div>
+                <div className="item-slots-row">
+                  <div className="item-slot consumable-slot"></div>
+                  <div className="item-slot consumable-slot"></div>
+                </div>
+              </div>
+              
               <div className="details-buttons">
                 <button onClick={handleConfirmSelection} className="confirm-button">Confirmar</button>
                 <button onClick={handleCancelSelection} className="cancel-button">Cancelar</button>
@@ -75,6 +92,26 @@ const ClassSelectionScreen: React.FC<ClassSelectionScreenProps> = ({ onSelectCla
             </div>
           )}
         </div>
+
+            {/* Barra lateral direita */}
+        <div className="class-rightsidebar">
+          {rightClasses.map(cls => (
+            <div
+              key={cls.name}
+              className={`class-card ${selectedClass?.name === cls.name ? 'selected' : ''}`}
+              onClick={() => handleClassClick(cls)}
+            >
+              <div className="class-image-container">
+                <img src={cls.image} alt={cls.name} className="class-image" />
+              </div>
+              
+              <div className="class-name-tag">
+                {cls.name}
+              </div>
+            </div>
+          ))}
+        </div>
+
       </div>
     </div>
   );
