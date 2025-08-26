@@ -1,7 +1,7 @@
 /* Contêiner de fundo para a tela de seleção */
 .select-container-bg {
-    width: 819.6px; /* 1366 * 0.6 */
-    height: 460.8px; /* 768 * 0.6 */
+    max-width: 1366px;
+    max-height: 768px;
     padding: 12px; /* 20 * 0.6 */
     border: 2.4px solid #5d4037; /* 4 * 0.6 */
     border-radius: 6px; /* 10 * 0.6 */
@@ -12,6 +12,7 @@
     background-color: #2a2a2a;
     box-sizing: border-box;
     flex-grow: 1;
+    width: 1000vw;
 }
 
 /* Wrapper para o título principal da tela */
