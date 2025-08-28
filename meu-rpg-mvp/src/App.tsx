@@ -7,6 +7,7 @@ import BattleScreen from './components/pages/BattleScreen';
 import GameOverScreen from './components/pages/GameOverScreen';
 import MainMenu from './components/pages/MainMenu';
 import './index.css';
+import LoginScreen from './components/pages/LoginScreen';
 
 // Componente principal que gerencia o estado e as telas do jogo.
 const App: React.FC = () => {
@@ -25,7 +26,13 @@ const App: React.FC = () => {
     goToClassSelection,
     classDefinitions,
     goToClassSelectionFromMenu,
+    isLoggedIn,
+    handleLoginSuccess,
   } = useGameLogic();
+  // Se o usuário não estiver logado, mostra a tela de login
+   if (!isLoggedIn) {
+    return <LoginScreen onLoginSuccess={handleLoginSuccess} />;
+  }
 
   // Renderização condicional baseada no estado do jogo
   const renderGameScreen = () => {

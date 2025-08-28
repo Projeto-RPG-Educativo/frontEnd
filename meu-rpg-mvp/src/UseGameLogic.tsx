@@ -23,7 +23,11 @@ export const useGameLogic = () => {
   const [gameOverMessage, setGameOverMessage] = useState<string>('');
   const [modifiedOptions, setModifiedOptions] = useState<string[] | null>(null);
   const [gameMessage, setGameMessage] = useState<string | null>(null);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
   // Efeito que verifica a condição de vitória ou derrota
   useEffect(() => {
     if (!player) return;
@@ -174,6 +178,8 @@ export const useGameLogic = () => {
     handleAnswer,
     goToClassSelection,
     classDefinitions,
-    goToClassSelectionFromMenu
+    goToClassSelectionFromMenu,
+    isLoggedIn,
+    handleLoginSuccess,
   };
 };
