@@ -10,7 +10,7 @@ import {
 
 export const useGameLogic = () => {
   // Estado do jogo
-  const [gameState, setGameState] = useState<'MAIN_MENU' | 'CLASS_SELECTION' | 'BATTLE' | 'GAME_OVER'>('MAIN_MENU');
+  const [gameState, setGameState] = useState<'MAIN_MENU' |'CLASS_SELECTION' | 'BATTLE' | 'GAME_OVER'>('MAIN_MENU');
   const [player, setPlayer] = useState<Player | null>(null);
   const [enemy, setEnemy] = useState<Enemy>({
     name: "Goblin da Gramática",
@@ -24,10 +24,29 @@ export const useGameLogic = () => {
   const [modifiedOptions, setModifiedOptions] = useState<string[] | null>(null);
   const [gameMessage, setGameMessage] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const goToSettings = () => setShowSettings(true);
+
+   const handleGoToMainMenu = () => {
+    setShowSettings(false);
+    setGameState('MAIN_MENU');
+  };  
+
+  const handleStartNewGame = () => {
+        setGameState('CLASS_SELECTION');
+    };
+
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
+    setIsRegistering(false);
   };
+  const handleGoToRegister = () => {
+    setIsRegistering(true);
+  };
+   const handleGoToLogin = () => {
+    setIsRegistering(false);};
+
   // Efeito que verifica a condição de vitória ou derrota
   useEffect(() => {
     if (!player) return;
@@ -181,5 +200,13 @@ export const useGameLogic = () => {
     goToClassSelectionFromMenu,
     isLoggedIn,
     handleLoginSuccess,
+    isRegistering,
+    setIsRegistering,
+    handleGoToLogin,
+    handleGoToRegister,
+    showSettings,
+    goToSettings,
+    handleGoToMainMenu,
+    handleStartNewGame,
   };
 };

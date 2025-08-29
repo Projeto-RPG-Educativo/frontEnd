@@ -1,21 +1,52 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import '../Styles/LoginScreen.css';
 
 interface LoginScreenProps {
   onLoginSuccess: () => void;
+  onGoToRegister: () => void;
 }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onGoToRegister }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aqui você adiciona a lógica de validação do login
-    if (username === 'admin' && password === '123') {
+
+    // Linha para o login de teste. Se as credenciais forem 'testuser' e 'testpass', o login é um sucesso.
+    if (username === 'user' && password === '123') {
+      console.log('Login de teste bem-sucedido!');
       onLoginSuccess();
-    } else {
-      alert('Usuário ou senha incorretos!');
+      return; // Interrompe a função para não chamar a API
+    }
+
+    try {
+      const apiUrl = 'http://localhost:3000/api/usuario/login';
+
+      const response = await axios.post(apiUrl, {
+        username,
+        password,
+      });
+
+      if (response.status === 200) {
+        console.log('Login bem-sucedido!', response.data);
+        onLoginSuccess();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          alert('Usuário não encontrado. Por favor, registre-se.');
+          onGoToRegister();
+        } else {
+          alert(error.response.data.message || 'Erro ao fazer login. Verifique suas credenciais.');
+        }
+      } else {
+        alert('Ocorreu um erro. Tente novamente mais tarde.');
+      }
+      console.error('Erro no login:', error);
     }
   };
 
@@ -48,6 +79,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
             ENTRAR
           </button>
         </form>
+        <button className="secondary-button" onClick={onGoToRegister}>
+          Ainda não tem conta? Clique para registrar
+        </button>
       </div>
     </div>
   );

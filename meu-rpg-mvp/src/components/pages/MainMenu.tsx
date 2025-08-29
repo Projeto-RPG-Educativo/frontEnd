@@ -3,9 +3,10 @@ import { useFullscreen } from '../Layout/FullscreenContext';
 
 interface MainMenuProps {
   onStartNewGame: () => void;
+  onGoToSettings: () => void;
 }
 
-export default function MainMenu({ onStartNewGame }: MainMenuProps) {
+export default function MainMenu({ onStartNewGame,  onGoToSettings }: MainMenuProps) {
   const { toggleFullScreen } = useFullscreen();
 
   const handleStartGame = () => {
@@ -21,7 +22,7 @@ export default function MainMenu({ onStartNewGame }: MainMenuProps) {
       <div className="main-menu-buttons">
       
         <button className="menu-button" onClick={handleStartGame}>NOVO JOGO</button>
-        <button className="menu-button">CONFIGURAÇÕES</button>
+        <button className="menu-button" onClick={onGoToSettings}>CONFIGURAÇÕES</button>
         <button className="menu-button">SAIR DO JOGO</button>
       </div>
     </div>

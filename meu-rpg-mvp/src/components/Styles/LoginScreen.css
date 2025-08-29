@@ -77,3 +77,19 @@
   transform: translateY(2px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
+
+.secondary-button {
+  background: none;
+  border: none;
+  color: #ffffff; 
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.secondary-button:hover {
+  color: #2980b9;
+}
