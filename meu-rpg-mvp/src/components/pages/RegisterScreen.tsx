@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../Styles/LoginScreen.css'; // Reutilizando os estilos
+import '../Styles/LoginScreen.css';
 
 interface RegisterScreenProps {
   onRegisterSuccess: () => void;
@@ -9,7 +9,7 @@ interface RegisterScreenProps {
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGoToLogin }) => {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState(''); // Alterado de 'username' para 'email'
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -20,7 +20,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
 
       const response = await axios.post(apiUrl, {
         name,
-        email, // Enviando 'email' em vez de 'username'
+        email,
         password,
       });
 
@@ -35,6 +35,29 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
         alert('Ocorreu um erro. Tente novamente mais tarde.');
       }
       console.error('Erro no registro:', error);
+    }
+  };
+
+  // --- Função para preencher os campos com dados de teste da API ---
+  const handleFillWithTestData = async () => {
+    try {
+      // Endpoint que retorna dados de teste
+      const Url = 'http://localhost:3000/api/usuario/registrar'; // Altere para a URL correta da sua API de teste
+
+      const response = await axios.get(Url);
+
+      // Assumindo que a API retorna um objeto com 'name', 'email' e 'password'
+      if (response.status === 200 && response.data) {
+        const { name, email, password } = response.data;
+        setName(name);
+        setEmail(email);
+        setPassword(password);
+      } else {
+        alert('Não foi possível obter os dados de teste da API.');
+      }
+    } catch (error) {
+      alert('Erro ao carregar dados de teste. Verifique a conexão com a API.');
+      console.error('Erro ao carregar dados:', error);
     }
   };
 
@@ -53,7 +76,6 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
               className="login-input"
             />
           </div>
-          {/* Campo de e-mail alterado */}
           <div className="input-group">
             <label htmlFor="email">E-mail</label>
             <input
@@ -78,6 +100,10 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
             CRIAR CONTA
           </button>
         </form>
+        {/* Novo botão para preencher dados de teste */}
+        <button className="secondary-button" onClick={handleFillWithTestData}>
+          Preencher com Dados de Teste
+        </button>
         <button className="secondary-button" onClick={onGoToLogin}>
           Já tem uma conta? Faça Login
         </button>
