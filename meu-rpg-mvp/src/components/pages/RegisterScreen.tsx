@@ -9,20 +9,26 @@ interface RegisterScreenProps {
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGoToLogin }) => {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState(''); // Alterado de 'username' para 'email'
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const apiUrl = 'http://localhost:3000/api/registrar';
+    // --- A CORREÇÃO CRÍTICA ESTÁ AQUI ---
+    // Criamos um novo objeto 'userData' que mapeia os nomes das variáveis do front-end
+    // para as chaves que o back-end espera.
+    const userData = {
+      nome_usuario: name, // A variável 'name' vira a propriedade 'nome_usuario'
+      email: email,
+      senha: password     // A variável 'password' vira a propriedade 'senha'
+    };
 
-      const response = await axios.post(apiUrl, {
-        name,
-        email, // Enviando 'email' em vez de 'username'
-        password,
-      });
+    try {
+      const apiUrl = 'http://localhost:3000/api/usuarios/registrar';
+
+      // Agora enviamos o objeto 'userData' que tem o formato correto
+      const response = await axios.post(apiUrl, userData);
 
       if (response.status === 201) {
         alert('Registro bem-sucedido! Faça login para continuar.');
@@ -30,6 +36,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
+        // Mostra a mensagem de erro que vem do back-end (ex: "Usuário já existe")
         alert(error.response.data.message || 'Erro ao registrar usuário.');
       } else {
         alert('Ocorreu um erro. Tente novamente mais tarde.');
@@ -53,7 +60,6 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
               className="login-input"
             />
           </div>
-          {/* Campo de e-mail alterado */}
           <div className="input-group">
             <label htmlFor="email">E-mail</label>
             <input
