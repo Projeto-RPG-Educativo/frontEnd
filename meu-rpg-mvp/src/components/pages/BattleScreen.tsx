@@ -1,5 +1,6 @@
 import React from 'react';
 import { type Player, type Enemy, type Question, type ClassName, classDefinitions } from '../../GameDataBank';
+import type { DialogueLine } from '../../GameDataBank';
 import '../Styles/BattleScreen.css';
 import BattleHUD from './BattleHUD';
 
@@ -13,6 +14,7 @@ interface BattleScreenProps {
   onUseAbility: () => void;
   classDefinitions: { [key in ClassName]: { name: string; description: string } };
   onGoToMenu: () => void;
+  onStartDialogue: (dialogues: DialogueLine[], nextState: "BATTLE" | "GAME_OVER") => void;
 }
 
 const BattleScreen: React.FC<BattleScreenProps> = ({
@@ -24,12 +26,15 @@ const BattleScreen: React.FC<BattleScreenProps> = ({
   onAnswer,
   onUseAbility,
   onGoToMenu,
+  classDefinitions,
+  onStartDialogue,
 }) => {
   
  return (
     <div className="battle-screen">
 
       <div className="battle-header">
+        
        <div className="battle-top-left">
           <div className="question-box">
             <p>{currentQuestion.text}</p>
@@ -59,7 +64,7 @@ const BattleScreen: React.FC<BattleScreenProps> = ({
             <button onClick={onUseAbility} disabled={player.abilityUsed}>
               {player.abilityUsed ? 'Habilidade Usada' : `Usar Habilidade: ${classDefinitions[player.className].name}`}
             </button>
-            <button>teste</button>
+            <button>dialogo teste</button>
             <button>TESTE</button>
             <button onClick={onGoToMenu}>Voltar ao Menu</button>
           </div>

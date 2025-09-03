@@ -1,12 +1,13 @@
+import React from 'react';
 import '../Styles/MainMenu.css';
 import { useFullscreen } from '../Layout/FullscreenContext';
 
 interface MainMenuProps {
   onStartNewGame: () => void;
-  onGoToSettings: () => void;
+  onGoToSettings: () => void; // Adicione a prop
 }
 
-export default function MainMenu({ onStartNewGame,  onGoToSettings }: MainMenuProps) {
+export default function MainMenu({ onStartNewGame, onGoToSettings }: MainMenuProps) {
   const { toggleFullScreen } = useFullscreen();
 
   const handleStartGame = () => {
@@ -20,7 +21,6 @@ export default function MainMenu({ onStartNewGame,  onGoToSettings }: MainMenuPr
         <h1 className="game-title">SEXO E PUTARIA</h1>
       </div>
       <div className="main-menu-buttons">
-      
         <button className="menu-button" onClick={handleStartGame}>NOVO JOGO</button>
         <button className="menu-button" onClick={onGoToSettings}>CONFIGURAÇÕES</button>
         <button className="menu-button">SAIR DO JOGO</button>

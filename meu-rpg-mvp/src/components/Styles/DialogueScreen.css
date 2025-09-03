@@ -1,0 +1,121 @@
+/* Container que sobrepõe a tela de jogo */
+.dialogue-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* Alinha a caixa de diálogo na parte de baixo */
+  background-color: rgba(0, 0, 0, 0.7); /* Fundo semi-transparente para focar no diálogo */
+  z-index: 1000; /* Garante que a tela de diálogo fique por cima de tudo */
+  font-family: 'Press Start 2P', cursive;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+/* Container da caixa de diálogo e imagens */
+.dialogue-main-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end; /* Alinha os itens na base */
+  width: 90%;
+  max-width: 1300px;
+  margin-bottom: 50px;
+}
+
+/* Container das imagens dos personagens */
+.character-image-container {
+  width: 300px; /* Largura da imagem */
+  height: 500px; /* Altura da imagem */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  
+}
+
+.character-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Estilo para o personagem que está falando */
+.active-speaker {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Estilo para o personagem que não está falando */
+.inactive-speaker {
+  opacity: 0.3;
+  filter: grayscale(100%);
+  transform: scale(0.95);
+}
+
+/* Caixa de Diálogo Central */
+.dialogue-box {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: #3e3e3e; /* Cor do container do jogo */
+  border: 4px solid #5d4037; /* Borda "Metal Slug" */
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 700px;
+  flex-grow: 1;
+}
+
+/* Caixa do nome do personagem */
+.speaker-name-box {
+  position: absolute;
+  top: -20px;
+  left: 20px;
+  background-color: #3b0909; /* Cor de destaque */
+  padding: 5px 15px;
+  border: 2px solid #5d4037;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.speaker-name-box p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Caixa do texto do diálogo */
+.dialogue-text-box {
+  background-color: #2e2e2e; /* Fundo mais escuro para o texto */
+  border: 2px solid #5d4037;
+  border-radius: 5px;
+  padding: 15px;
+  color: #fff;
+  font-family: Arial, sans-serif; /* Usamos uma fonte mais legível para o diálogo */
+  line-height: 1.4;
+  margin-top: 10px;
+}
+
+/* Botão de Avançar Diálogo */
+.dialogue-buttons-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.advance-button {
+  padding: 10px 20px;
+  background-color: #380505;
+  border: 2px solid #5d4037;
+  color: #fff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-transform: uppercase;
+  width: auto;
+  height: auto;
+
+}

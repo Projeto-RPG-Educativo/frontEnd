@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../Styles/LoginScreen.css';
+import '../Styles/LoginScreen.css'; // Reutilizando os estilos
 
 interface RegisterScreenProps {
   onRegisterSuccess: () => void;
@@ -15,14 +15,20 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const apiUrl = 'http://localhost:3000/api/registrar';
+    // --- A CORREÇÃO CRÍTICA ESTÁ AQUI ---
+    // Criamos um novo objeto 'userData' que mapeia os nomes das variáveis do front-end
+    // para as chaves que o back-end espera.
+    const userData = {
+      nome_usuario: name, // A variável 'name' vira a propriedade 'nome_usuario'
+      email: email,
+      senha: password     // A variável 'password' vira a propriedade 'senha'
+    };
 
-      const response = await axios.post(apiUrl, {
-        name,
-        email,
-        password,
-      });
+    try {
+      const apiUrl = 'http://localhost:3000/api/usuarios/registrar';
+
+      // Agora enviamos o objeto 'userData' que tem o formato correto
+      const response = await axios.post(apiUrl, userData);
 
       if (response.status === 201) {
         alert('Registro bem-sucedido! Faça login para continuar.');
@@ -30,34 +36,12 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
+        // Mostra a mensagem de erro que vem do back-end (ex: "Usuário já existe")
         alert(error.response.data.message || 'Erro ao registrar usuário.');
       } else {
         alert('Ocorreu um erro. Tente novamente mais tarde.');
       }
       console.error('Erro no registro:', error);
-    }
-  };
-
-  // --- Função para preencher os campos com dados de teste da API ---
-  const handleFillWithTestData = async () => {
-    try {
-      // Endpoint que retorna dados de teste
-      const Url = 'http://localhost:3000/api/usuario/registrar'; // Altere para a URL correta da sua API de teste
-
-      const response = await axios.get(Url);
-
-      // Assumindo que a API retorna um objeto com 'name', 'email' e 'password'
-      if (response.status === 200 && response.data) {
-        const { name, email, password } = response.data;
-        setName(name);
-        setEmail(email);
-        setPassword(password);
-      } else {
-        alert('Não foi possível obter os dados de teste da API.');
-      }
-    } catch (error) {
-      alert('Erro ao carregar dados de teste. Verifique a conexão com a API.');
-      console.error('Erro ao carregar dados:', error);
     }
   };
 
@@ -100,10 +84,6 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
             CRIAR CONTA
           </button>
         </form>
-        {/* Novo botão para preencher dados de teste */}
-        <button className="secondary-button" onClick={handleFillWithTestData}>
-          Preencher com Dados de Teste
-        </button>
         <button className="secondary-button" onClick={onGoToLogin}>
           Já tem uma conta? Faça Login
         </button>

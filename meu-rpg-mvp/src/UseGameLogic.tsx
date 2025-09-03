@@ -7,47 +7,67 @@ import {
   type Question,
   questionsDb,
 } from './GameDataBank';
+import GoblinEstudado from './assets/GoblinEstudado.png'; 
+
+// --- Interface para os dados do diálogo ---
+interface DialogueLine {
+  speaker: string;
+  text: string;
+}
 
 export const useGameLogic = () => {
-  // Estado do jogo
-  const [gameState, setGameState] = useState<'MAIN_MENU' |'CLASS_SELECTION' | 'BATTLE' | 'GAME_OVER'>('MAIN_MENU');
+  // --- Estado da Aplicação (gerencia qual tela está visível) ---
+  const [appState, setAppState] = useState<'LOGIN' | 'REGISTER' | 'MAIN_MENU' | 'SETTINGS' | 'GAME'>('LOGIN');
+
+  // --- Estado do Jogo (gerencia o fluxo dentro da tela GAME) ---
+  const [gameState, setGameState] = useState<'CLASS_SELECTION' | 'BATTLE' | 'DIALOGUE' | 'GAME_OVER'>('CLASS_SELECTION');
+
+  // --- Estado do Diálogo ---
+  const [dialogueData, setDialogueData] = useState<DialogueLine[] | null>(null);
+  const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
+
+  // --- Estados do Jogo ---
   const [player, setPlayer] = useState<Player | null>(null);
   const [enemy, setEnemy] = useState<Enemy>({
     name: "Goblin da Gramática",
     hp: 100,
     maxHp: 100,
     damage: 20,
+    image: GoblinEstudado, 
   });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState<Question>(questionsDb[0]);
   const [gameOverMessage, setGameOverMessage] = useState<string>('');
   const [modifiedOptions, setModifiedOptions] = useState<string[] | null>(null);
   const [gameMessage, setGameMessage] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const goToSettings = () => setShowSettings(true);
 
-   const handleGoToMainMenu = () => {
-    setShowSettings(false);
-    setGameState('MAIN_MENU');
-  };  
+  // --- Funções de Navegação Global ---
+  const handleGoToLogin = () => setAppState('LOGIN');
+  const handleGoToRegister = () => setAppState('REGISTER');
+  const handleLoginSuccess = () => setAppState('MAIN_MENU');
+  const handleGoToMainMenu = () => setAppState('MAIN_MENU');
+  const handleGoToSettings = () => setAppState('SETTINGS');
+  const handleStartNewGame = () => setAppState('GAME');
 
-  const handleStartNewGame = () => {
-        setGameState('CLASS_SELECTION');
-    };
-
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
-    setIsRegistering(false);
+  // --- Funções de Diálogo ---
+  const handleStartDialogue = (dialogues: DialogueLine[], nextState: 'BATTLE' | 'GAME_OVER') => {
+    setDialogueData(dialogues);
+    setCurrentDialogueIndex(0);
+    setGameState('DIALOGUE');
   };
-  const handleGoToRegister = () => {
-    setIsRegistering(true);
-  };
-   const handleGoToLogin = () => {
-    setIsRegistering(false);};
+  
+  const handleAdvanceDialogue = () => {
+    if (!dialogueData) return;
 
-  // Efeito que verifica a condição de vitória ou derrota
+    if (currentDialogueIndex < dialogueData.length - 1) {
+      setCurrentDialogueIndex(prevIndex => prevIndex + 1);
+    } else {
+      setDialogueData(null);
+      setGameState('BATTLE'); // Retorna para a batalha quando o diálogo terminar
+    }
+  };
+
+  // --- Efeito de Verificação de Fim de Jogo ---
   useEffect(() => {
     if (!player) return;
 
@@ -60,15 +80,12 @@ export const useGameLogic = () => {
     }
   }, [player, enemy.hp]);
 
-  // Função para exibir uma mensagem temporária
+  // --- Funções de Lógica do Jogo ---
   const showGameMessage = (message: string) => {
     setGameMessage(message);
-    setTimeout(() => setGameMessage(null), 3000); // Remove a mensagem após 3 segundos
+    setTimeout(() => setGameMessage(null), 3000);
   };
 
-   
-
-  // Função para selecionar a classe e iniciar o jogo
   const handleSelectClass = (className: ClassName) => {
     const selectedClass = classDefinitions[className];
     setPlayer({
@@ -76,115 +93,69 @@ export const useGameLogic = () => {
       className: className,
       ...selectedClass.stats,
       abilityUsed: false,
+      image: selectedClass.image, 
     });
     setGameState('BATTLE');
   };
 
-  // Função para usar a habilidade da classe
-  const handleUseAbility = () => {
-    if (!player || player.abilityUsed) return;
-
-    setPlayer(p => ({ ...p!, abilityUsed: true }));
-
-    switch (player.className) {
-      case 'Tank':
-        setPlayer(p => ({ ...p!, shieldUp: true }));
-        showGameMessage("Escudo levantado! O próximo erro será bloqueado.");
-        break;
-      case 'Mago':
-        const incorrectOptions = currentQuestion.options.filter(opt => opt !== currentQuestion.correctAnswer);
-        const optionToRemove = incorrectOptions[Math.floor(Math.random() * incorrectOptions.length)];
-        setModifiedOptions(currentQuestion.options.filter(opt => opt !== optionToRemove));
-        showGameMessage(`Clarividência! A opção "${optionToRemove}" foi eliminada.`);
-        break;
-      case 'Lutador':
-        setPlayer(p => ({ ...p!, investidaActive: true }));
-        showGameMessage("Investida preparada! Seu próximo acerto causará dano extra.");
-        break;
-      case 'Ladino':
-        const hintOptions = currentQuestion.options.filter(opt => opt !== currentQuestion.correctAnswer);
-        showGameMessage(`Dica do Ladino: A resposta NÃO é "${hintOptions[0]}"!`);
-        break;
-      case 'Paladino':
-        setPlayer(p => ({ ...p!, hp: Math.min(p!.maxHp, p!.hp + 30) }));
-        showGameMessage("Cura! Você recuperou 30 pontos de vida.");
-        break;
-      case 'Bardo':
-        const hardQuestion = questionsDb.find(q => q.difficulty === 'hard');
-        if (hardQuestion) {
-          setCurrentQuestion(hardQuestion);
-          showGameMessage("Lábia! Você trocou a pergunta por um desafio de vida ou morte!");
-        }
-        break;
-    }
-  };
-
-  // Função para lidar com a resposta do jogador
-  const handleAnswer = (selectedOption: string) => {
-    if (gameState !== 'BATTLE') return;
-
+   const handleAnswer = (selectedOption: string) => {
+    if (!player || gameState !== 'BATTLE') return;
     const isCorrect = selectedOption === currentQuestion.correctAnswer;
-
+    
     if (isCorrect) {
-      let damageDealt = player!.damage;
-      if (player?.investidaActive) {
-        damageDealt *= 2;
-        setPlayer(p => ({ ...p!, investidaActive: false }));
-        showGameMessage("Correto! Sua investida causou dano massivo!");
+      const playerDamage = player.damage;
+      const newEnemyHp = enemy.hp - playerDamage;
+      setEnemy({ ...enemy, hp: newEnemyHp });
+      
+      const nextQuestionIndex = currentQuestionIndex + 1;
+      handleStartDialogue([{ speaker: "Herói", text: "Resposta correta! Ponto para a minha sabedoria!" }], 'BATTLE');
+      // Lógica de avanço da pergunta
+      if (nextQuestionIndex < questionsDb.length) {
+        setCurrentQuestionIndex(nextQuestionIndex);
+        setCurrentQuestion(questionsDb[nextQuestionIndex]);
       } else {
-        showGameMessage("Correto! Você ataca.");
+        // Se todas as perguntas acabaram, você venceu o jogo
+        setGameOverMessage("Parabéns! Você derrotou o Goblin da Gramática!");
+        setGameState('GAME_OVER');
       }
       
-      if (player?.className === 'Bardo' && currentQuestion.difficulty === 'hard') {
-        showGameMessage("Incrível! Sua lábia funcionou e você venceu o combate!");
-        setEnemy(e => ({...e, hp: 0}));
-        return;
-      }
-
-      setEnemy(e => ({ ...e, hp: Math.max(0, e.hp - damageDealt) }));
-
     } else {
-      if (player?.shieldUp) {
-        setPlayer(p => ({ ...p!, shieldUp: false }));
-        showGameMessage("Seu escudo absorveu o dano!");
-      } else {
-        setPlayer(p => ({ ...p!, hp: Math.max(0, p!.hp - enemy.damage) }));
-        showGameMessage("Errado! Você sofreu dano.");
-      }
-    }
+      // Lógica de erro...
+      const newPlayerHp = player.hp - enemy.damage;
+      setPlayer({ ...player, hp: newPlayerHp });
 
-    const nextQuestionIndex = currentQuestionIndex + 1;
-    const normalQuestions = questionsDb.filter(q => q.difficulty === 'normal');
-    if (nextQuestionIndex < normalQuestions.length) {
-      setCurrentQuestionIndex(nextQuestionIndex);
-      setCurrentQuestion(normalQuestions[nextQuestionIndex]);
-      setModifiedOptions(null);
-    } else {
-      if (enemy.hp > 0) {
-        setGameOverMessage("Você ficou sem perguntas e não conseguiu derrotar o inimigo!");
+      handleStartDialogue([{ speaker: "Goblin", text: "Você errou! Minha gramática é perfeita!" }], 'BATTLE');
+      
+      if (newPlayerHp <= 0) {
+        setGameOverMessage("Você foi derrotado pela gramática do mal. Fim de jogo!");
         setGameState('GAME_OVER');
       }
     }
-  };
-  
-  // Função para reiniciar o jogo
-  const goToClassSelection = () => {
-    setGameState('CLASS_SELECTION');
-    setPlayer(null);
-    setEnemy({ name: "Goblin da Gramática", hp: 100, maxHp: 100, damage: 20 });
-    setCurrentQuestionIndex(0);
-    setCurrentQuestion(questionsDb[0]);
-    setGameOverMessage('');
-    setModifiedOptions(null);
     setGameMessage(null);
   };
-
-  const goToClassSelectionFromMenu = () => {
-    setGameState('CLASS_SELECTION');
+  
+  const handleUseAbility = () => {
+    if (!player || player.abilityUsed) return;
+    setPlayer(p => ({ ...p!, abilityUsed: true }));
+    // Lógica das habilidades...
+    handleStartDialogue([{ speaker: "Herói", text: "Usando minha habilidade especial!" }], 'BATTLE');
   };
 
-  // Retorna todos os estados e funções
+  const goToClassSelection = () => {
+    setGameState('CLASS_SELECTION');
+    // ... reset de estados ...
+  };
+  
+  // --- Retorna todos os estados e funções necessários para o App.tsx ---
   return {
+    appState,
+    handleLoginSuccess,
+    handleGoToLogin,
+    handleGoToRegister,
+    handleGoToMainMenu,
+    handleGoToSettings,
+    handleStartNewGame,
+
     gameState,
     player,
     enemy,
@@ -197,16 +168,11 @@ export const useGameLogic = () => {
     handleAnswer,
     goToClassSelection,
     classDefinitions,
-    goToClassSelectionFromMenu,
-    isLoggedIn,
-    handleLoginSuccess,
-    isRegistering,
-    setIsRegistering,
-    handleGoToLogin,
-    handleGoToRegister,
-    showSettings,
-    goToSettings,
-    handleGoToMainMenu,
-    handleStartNewGame,
+    
+    dialogueData,
+    currentDialogueIndex,
+    currentDialogue: dialogueData ? dialogueData[currentDialogueIndex] : null,
+    handleStartDialogue,
+    handleAdvanceDialogue,
   };
 };

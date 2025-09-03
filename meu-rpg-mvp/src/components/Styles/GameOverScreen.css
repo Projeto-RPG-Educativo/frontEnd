@@ -1,0 +1,68 @@
+.game-over-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+  font-family: 'Press Start 2P', cursive;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.game-over-wrapper {
+  background-color: #3e3e3e;
+  border: 4px solid #d40707;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 600px;
+  width: 90%;
+  text-align: center;
+}
+
+.game-over-title {
+  font-size: 32px;
+  text-shadow: 3px 3px #000;
+  color: #d40707;
+  margin: 0;
+}
+
+.game-over-message {
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 10px 0;
+}
+
+.restart-button {
+  padding: 15px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #440e0e;
+  border: 3px solid #5d4037;
+  color: #fff;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-family: 'Press Start 2P', cursive;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  width:auto;
+  height:auto;
+}
+
+.restart-button:hover {
+  filter: brightness(1.2);
+}
+
+.restart-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
