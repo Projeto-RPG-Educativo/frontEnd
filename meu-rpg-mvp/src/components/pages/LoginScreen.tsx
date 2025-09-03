@@ -3,7 +3,7 @@ import axios from 'axios';
 import '../Styles/LoginScreen.css';
 
 interface LoginScreenProps {
-  onLoginSuccess: (token: string, user: any) => void; // Ajustado para receber dados
+  onLoginSuccess: () => void;
   onGoToRegister: () => void;
 }
 
@@ -11,36 +11,40 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onGoToRegiste
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // --- A CORREÇÃO CRÍTICA ESTÁ AQUI ---
-    // Criamos um objeto 'loginData' que mapeia os nomes das variáveis do front-end
-    // para as chaves que o back-end espera.
-    const loginData = {
-      nome_usuario: username, // A variável de estado 'username' vira a propriedade 'nome_usuario'
-      senha: password,      // O back-end espera 'senha', não 'password'
-    };
+    // Linha para o login de teste. Se as credenciais forem 'testuser' e 'testpass', o login é um sucesso.
+    if (username === 'user' && password === '123') {
+      console.log('Login de teste bem-sucedido!');
+      onLoginSuccess();
+      return; // Interrompe a função para não chamar a API
+    }
 
     try {
-      const apiUrl = 'http://localhost:3000/api/usuarios/login';
+      const apiUrl = 'http://localhost:3000/api/usuario/login';
 
-      // Agora enviamos o objeto 'loginData' que tem o formato correto
-      const response = await axios.post(apiUrl, loginData);
+      const response = await axios.post(apiUrl, {
+        username,
+        password,
+      });
 
       if (response.status === 200) {
-        const { token, user } = response.data;
         console.log('Login bem-sucedido!', response.data);
-        // Passamos o token e os dados do usuário para a função de sucesso
-        onLoginSuccess(token, user); 
+        onLoginSuccess();
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        // Mostra a mensagem de erro que vem do back-end (ex: "Credenciais inválidas")
-        alert(error.response.data.message || 'Erro ao fazer login.');
+        const statusCode = error.response.status;
+
+        if (statusCode === 404) {
+          alert('Usuário não encontrado. Por favor, registre-se.');
+          onGoToRegister();
+        } else {
+          alert(error.response.data.message || 'Erro ao fazer login. Verifique suas credenciais.');
+        }
       } else {
-        alert('Ocorreu um erro de conexão. Tente novamente mais tarde.');
+        alert('Ocorreu um erro. Tente novamente mais tarde.');
       }
       console.error('Erro no login:', error);
     }

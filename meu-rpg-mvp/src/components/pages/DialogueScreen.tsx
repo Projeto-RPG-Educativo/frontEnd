@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import '../Styles/DialogueScreen.css';
 
 interface DialogueLine {
@@ -26,6 +27,7 @@ const DialogueScreen: React.FC<DialogueScreenProps> = ({
   if (!dialogueData || dialogueData.length === 0) {
     return null;
   }
+  const [showAdvanceButton, setShowAdvanceButton] = useState(false);
 
   const currentLine = dialogueData[currentDialogueIndex];
   const activeSpeakerName = currentLine.speaker;
@@ -35,6 +37,27 @@ const DialogueScreen: React.FC<DialogueScreenProps> = ({
 
   const leftImageSrc = characterImages[leftSpeakerName];
   const rightImageSrc = characterImages[rightSpeakerName];
+  
+  useEffect(() => {
+    // Duração do temporizador em milissegundos (ex: 3 segundos)
+    const timerDuration = 1000;
+
+    // Temporizador para pular o diálogo automaticamente
+    const autoAdvanceTimer = setTimeout(() => {
+      onAdvanceDialogue();
+    }, timerDuration);
+
+    // Temporizador para mostrar o botão de avanço após um pequeno atraso
+    const buttonTimer = setTimeout(() => {
+      setShowAdvanceButton(true);
+    }, 500); // Exibe o botão após 0.5 segundos
+
+    // Função de limpeza para evitar problemas quando o componente é desmontado
+    return () => {
+      clearTimeout(autoAdvanceTimer);
+      clearTimeout(buttonTimer);
+    };
+  }, [currentDialogueIndex, onAdvanceDialogue]);
 
   return (
     <div className="dialogue-overlay">
@@ -55,9 +78,11 @@ const DialogueScreen: React.FC<DialogueScreenProps> = ({
             <p>{currentLine.text}</p>
           </div>
           <div className="dialogue-buttons-wrapper">
+             {showAdvanceButton && (
             <button onClick={onAdvanceDialogue} className="advance-button">
               Avançar
             </button>
+             )}
           </div>
         </div>
 
