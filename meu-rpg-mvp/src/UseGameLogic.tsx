@@ -10,7 +10,7 @@ import {
 
 export const useGameLogic = () => {
   // Estado do jogo
-  const [gameState, setGameState] = useState<'MAIN_MENU' |'CLASS_SELECTION' | 'BATTLE' | 'GAME_OVER'>('MAIN_MENU');
+  const [gameState, setGameState] = useState<'MAIN_MENU' |'MAP_VIEW' |'CLASS_SELECTION' | 'BATTLE' | 'GAME_OVER'>('MAIN_MENU');
   const [player, setPlayer] = useState<Player | null>(null);
   const [enemy, setEnemy] = useState<Enemy>({
     name: "Goblin da Gramática",
@@ -32,6 +32,10 @@ export const useGameLogic = () => {
     setShowSettings(false);
     setGameState('MAIN_MENU');
   };  
+
+  const handleGoToMap = () => {
+  setGameState('MAP_VIEW');
+  };
 
   const handleStartNewGame = () => {
         setGameState('CLASS_SELECTION');
@@ -207,6 +211,7 @@ export const useGameLogic = () => {
     showSettings,
     goToSettings,
     handleGoToMainMenu,
+    handleGoToMap,
     handleStartNewGame,
   };
 };

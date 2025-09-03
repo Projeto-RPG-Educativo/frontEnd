@@ -10,6 +10,7 @@ import './index.css';
 import LoginScreen from './components/pages/LoginScreen';
 import RegisterScreen from './components/pages/RegisterScreen';
 import SettingsScreen from './components/pages/SettingsScreen';
+import MapScreen from './components/pages/MapScreen';
 
 // Componente principal que gerencia o estado e as telas do jogo.
 
@@ -18,6 +19,7 @@ const App: React.FC = () => {
   const {
     gameState,
     player,
+    handleGoToMap,
     enemy,
     currentQuestion,
     gameOverMessage,
@@ -37,7 +39,7 @@ const App: React.FC = () => {
     showSettings,
     goToSettings,
     handleGoToMainMenu,
-    handleStartNewGame,
+    //handleStartNewGame,
   } = useGameLogic();
 
   // Se o usuário não estiver logado, mostra a tela de login
@@ -59,7 +61,7 @@ const App: React.FC = () => {
 
     switch (gameState) {
         case 'MAIN_MENU':
-          return <MainMenu onStartNewGame={handleStartNewGame} onGoToSettings={goToSettings} />;
+          return <MainMenu onStartNewGame={handleGoToMap} onGoToSettings={goToSettings} />;
       case 'CLASS_SELECTION':
         return <ClassSelectionScreen onSelectClass={handleSelectClass} />;
       case 'BATTLE':
@@ -79,6 +81,8 @@ const App: React.FC = () => {
         );
       case 'GAME_OVER':
         return <GameOverScreen message={gameOverMessage} onRestart={goToClassSelection} />;
+      case 'MAP_VIEW':
+        return <MapScreen />;
       default:
         return null;
     }

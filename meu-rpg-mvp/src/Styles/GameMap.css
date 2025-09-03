@@ -1,0 +1,8 @@
+.game-map {
+  width: 800px;  /* Largura do mapa */
+  height: 600px; /* Altura do mapa */
+  background-color: #2ecc71; /* Verde, para parecer grama */
+  border: 5px solid #27ae60;
+  position: relative; /* Essencial! O jogador se moverá em relação a este container. */
+  overflow: hidden; /* Garante que o jogador não "saia" do mapa */
+}
