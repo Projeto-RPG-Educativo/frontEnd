@@ -23,8 +23,6 @@ export const useGameLogic = () => {
   const [gameOverMessage, setGameOverMessage] = useState<string>('');
   const [modifiedOptions, setModifiedOptions] = useState<string[] | null>(null);
   const [gameMessage, setGameMessage] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const goToSettings = () => setShowSettings(true);
 
@@ -40,16 +38,6 @@ export const useGameLogic = () => {
   const handleStartNewGame = () => {
         setGameState('CLASS_SELECTION');
     };
-
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
-    setIsRegistering(false);
-  };
-  const handleGoToRegister = () => {
-    setIsRegistering(true);
-  };
-   const handleGoToLogin = () => {
-    setIsRegistering(false);};
 
   // Efeito que verifica a condição de vitória ou derrota
   useEffect(() => {
@@ -202,12 +190,6 @@ export const useGameLogic = () => {
     goToClassSelection,
     classDefinitions,
     goToClassSelectionFromMenu,
-    isLoggedIn,
-    handleLoginSuccess,
-    isRegistering,
-    setIsRegistering,
-    handleGoToLogin,
-    handleGoToRegister,
     showSettings,
     goToSettings,
     handleGoToMainMenu,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react'; // Adicione useState aqui
 import { useGameLogic } from './UseGameLogic';
 import { FullscreenProvider } from './components/Layout/FullscreenContext';
 import Layout from './components/Layout/Layout';
@@ -11,11 +11,17 @@ import LoginScreen from './components/pages/LoginScreen';
 import RegisterScreen from './components/pages/RegisterScreen';
 import SettingsScreen from './components/pages/SettingsScreen';
 import MapScreen from './components/pages/MapScreen';
-
-// Componente principal que gerencia o estado e as telas do jogo.
+import { AuthContext, AuthProvider } from './contexts/AuthContext';
 
 const App: React.FC = () => {
-  // Chama o hook para obter toda a lógica
+  const { isLoggedIn, login } = useContext(AuthContext);
+
+  // MUDANÇA 1: Trazemos a lógica de troca de tela para dentro do App
+  const [isRegistering, setIsRegistering] = useState(false);
+  const handleGoToRegister = () => setIsRegistering(true);
+  const handleGoToLogin = () => setIsRegistering(false);
+
+  // MUDANÇA 2: Removemos as variáveis que não existem mais do useGameLogic
   const {
     gameState,
     player,
@@ -31,37 +37,28 @@ const App: React.FC = () => {
     goToClassSelection,
     classDefinitions,
     goToClassSelectionFromMenu,
-    isLoggedIn,
-    handleLoginSuccess,
-    isRegistering,
-    handleGoToRegister,
-    handleGoToLogin,
     showSettings,
     goToSettings,
     handleGoToMainMenu,
-    //handleStartNewGame,
   } = useGameLogic();
 
-  // Se o usuário não estiver logado, mostra a tela de login
-   if (!isLoggedIn) {
+  if (!isLoggedIn) {
     if (isRegistering) {
-      return <RegisterScreen onRegisterSuccess={handleLoginSuccess} onGoToLogin={handleGoToLogin} />;
+      // Agora usamos as funções que acabamos de criar aqui no App
+      return <RegisterScreen onRegisterSuccess={handleGoToLogin} onGoToLogin={handleGoToLogin} />;
     } else {
-      return <LoginScreen onLoginSuccess={handleLoginSuccess} onGoToRegister={handleGoToRegister} />;
+      return <LoginScreen onLoginSuccess={login} onGoToRegister={handleGoToRegister} />;
     }
-  } 
+  }
 
-    
-  // Renderização condicional baseada no estado do jogo
   const renderGameScreen = () => {
     if (showSettings) {
-      // Se showSettings for true, renderize a tela de configurações
       return <SettingsScreen onGoToMainMenu={handleGoToMainMenu} onSaveGame={() => {}} onLoadGame={() => {}} />;
     }
 
     switch (gameState) {
-        case 'MAIN_MENU':
-          return <MainMenu onStartNewGame={handleGoToMap} onGoToSettings={goToSettings} />;
+      case 'MAIN_MENU':
+        return <MainMenu onStartNewGame={handleGoToMap} onGoToSettings={goToSettings} />;
       case 'CLASS_SELECTION':
         return <ClassSelectionScreen onSelectClass={handleSelectClass} />;
       case 'BATTLE':
@@ -97,4 +94,12 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+const AppWrapper: React.FC = () => {
+  return (
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  );
+};
+
+export default AppWrapper;
