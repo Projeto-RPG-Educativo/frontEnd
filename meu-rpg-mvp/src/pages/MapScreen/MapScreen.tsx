@@ -1,5 +1,5 @@
 import React from 'react';
-import GameMap from '../GameMap'; // Ajuste o caminho se necessário
+import GameMap from '../../components/GameMap/GameMap'; // Ajuste o caminho se necessário
 
 const MapScreen: React.FC = () => {
   return (

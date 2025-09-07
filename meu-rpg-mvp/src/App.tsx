@@ -1,16 +1,16 @@
 import React, { useContext, useState } from 'react'; // Adicione useState aqui
-import { useGameLogic } from './UseGameLogic';
-import { FullscreenProvider } from './components/Layout/FullscreenContext';
+import { useGameLogic } from './hooks/UseGameLogic';
+import { FullscreenProvider } from './contexts/FullscreenContext';
 import Layout from './components/Layout/Layout';
-import ClassSelectionScreen from './components/pages/ClassSelectionScreen';
-import BattleScreen from './components/pages/BattleScreen';
-import GameOverScreen from './components/pages/GameOverScreen';
-import MainMenu from './components/pages/MainMenu';
+import ClassSelectionScreen from './pages/ClassSelectionScreen/ClassSelectionScreen';
+import BattleScreen from './pages/BattleScreen/BattleScreen';
+import GameOverScreen from './pages/GameOverScreen/GameOverScreen';
+import MainMenu from './pages/MainMenu/MainMenu';
 import './index.css';
-import LoginScreen from './components/pages/LoginScreen';
-import RegisterScreen from './components/pages/RegisterScreen';
-import SettingsScreen from './components/pages/SettingsScreen';
-import MapScreen from './components/pages/MapScreen';
+import LoginScreen from './pages/LoginScreen/LoginScreen';
+import RegisterScreen from './pages/RegisterScreen/RegisterScreen';
+import SettingsScreen from './pages/SettingsScreen/SettingsScreen';
+import MapScreen from './pages/MapScreen/MapScreen';
 import { AuthContext, AuthProvider } from './contexts/AuthContext';
 
 const App: React.FC = () => {

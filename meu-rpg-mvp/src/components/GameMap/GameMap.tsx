@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Player from './Player';
+import Player from '../Player/Player';
 import '../Styles/GameMap.css';
 
 const TILE_SIZE = 40; // Tamanho de cada "passo" do personagem

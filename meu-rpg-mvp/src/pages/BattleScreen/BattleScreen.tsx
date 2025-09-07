@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Player, type Enemy, type Question, type ClassName, classDefinitions } from '../../GameDataBank';
+import { type Player, type Enemy, type Question, type ClassName, classDefinitions } from '../../data/GameDataBank';
 import '../Styles/BattleScreen.css';
 import BattleHUD from './BattleHUD';
 

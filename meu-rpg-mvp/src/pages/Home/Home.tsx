@@ -1,5 +1,5 @@
 import React from 'react';
-import GameMap from '../GameMap'; // 1. Garanta que a importação do mapa está correta
+import GameMap from '../../components/GameMap/GameMap'; // 1. Garanta que a importação do mapa está correta
 
 const Home: React.FC = () => {
   // No futuro, você pode adicionar aqui a lógica para mostrar o menu,

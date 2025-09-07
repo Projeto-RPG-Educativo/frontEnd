@@ -1,5 +1,5 @@
 import '../Styles/MainMenu.css';
-import { useFullscreen } from '../Layout/FullscreenContext';
+import { useFullscreen } from '../../contexts/FullscreenContext';
 
 interface MainMenuProps {
   onStartNewGame: () => void;
