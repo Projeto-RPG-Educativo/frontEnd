@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Styles/BattleHUD.css';
+import './BattleHUD.css';
 
 interface BattleHUDProps {
   name: string;

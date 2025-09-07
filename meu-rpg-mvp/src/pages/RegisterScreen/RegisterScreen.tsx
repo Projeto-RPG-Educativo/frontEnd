@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../Styles/LoginScreen.css'; // Reutilizando os estilos
+import '../LoginScreen/LoginScreen.css'; // Reutilizando os estilos
 
 interface RegisterScreenProps {
   onRegisterSuccess: () => void;

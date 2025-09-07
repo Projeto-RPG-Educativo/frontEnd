@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Styles/Player.css'; // Criaremos este CSS a seguir
+import './Player.css'; // Criaremos este CSS a seguir
 
 interface PlayerProps {
   position: { x: number; y: number };

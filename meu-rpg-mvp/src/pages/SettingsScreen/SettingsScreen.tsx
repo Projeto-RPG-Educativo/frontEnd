@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import '../Styles/SettingsScreen.css';
-import { useFullscreen } from '../Layout/FullscreenContext';
+import './SettingsScreen.css';
+import { useFullscreen } from '../../contexts/FullscreenContext';
 
 interface SettingsScreenProps {
     onGoToMainMenu: () => void;

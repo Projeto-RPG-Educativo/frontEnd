@@ -1,4 +1,4 @@
-import '../Styles/MainMenu.css';
+import './MainMenu.css';
 import { useFullscreen } from '../../contexts/FullscreenContext';
 
 interface MainMenuProps {

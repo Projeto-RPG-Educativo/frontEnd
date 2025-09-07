@@ -1,6 +1,6 @@
 import React from 'react';
 // import { Player, Enemy } from '../../GameDataBank';
-import './HUD.css';
+import 'HUD.css';
 
 interface HUDProps {
   title: string;

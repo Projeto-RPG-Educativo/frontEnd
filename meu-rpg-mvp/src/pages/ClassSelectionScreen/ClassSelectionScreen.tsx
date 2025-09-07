@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { type ClassName, classDefinitions } from '../../data/GameDataBank';
-import '../Styles/ClassSelectionScreen.css';
+import './ClassSelectionScreen.css';
 
 type SelectedClass = typeof classDefinitions[keyof typeof classDefinitions];
 

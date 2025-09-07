@@ -1,9 +1,9 @@
-import Tank from './assets/Tank.jpg';
-import Mage from './assets/Mage.jpg';
-import Fighter from './assets/Fighter.jpg';
-import Rogue from './assets/Rogue.jpg';
-import Paladin from './assets/Paladin.jpg';
-import Bard from './assets/Bard.jpg';
+import Tank from "../assets/Tank.jpg"
+import Mage from "../assets/Mage.jpg";
+import Fighter from "../assets/Fighter.jpg";
+import Rogue from "../assets/Rogue.jpg";
+import Paladin from "../assets/Paladin.jpg";
+import Bard from "../assets/Bard.jpg";
 
 
 export type ClassName = 'Tank' | 'Mago' | 'Lutador' | 'Ladino' | 'Paladino' | 'Bardo';
