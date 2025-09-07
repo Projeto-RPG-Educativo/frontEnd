@@ -1,6 +1,6 @@
 import React from 'react';
-import '../Styles/MainMenu.css';
-import { useFullscreen } from '../Layout/FullscreenContext';
+import './MainMenu.css';
+import { useFullscreen } from '../../components/Layout/FullscreenContext';
 
 interface MainMenuProps {
   onStartNewGame: () => void;

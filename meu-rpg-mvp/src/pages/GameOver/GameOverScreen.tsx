@@ -1,5 +1,5 @@
 import React from 'react';
-import '../Styles/GameOverScreen.css';
+import './GameOverScreen.css';
 
 interface GameOverScreenProps {
   message: string;

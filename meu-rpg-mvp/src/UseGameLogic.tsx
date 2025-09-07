@@ -17,10 +17,10 @@ interface DialogueLine {
 
 export const useGameLogic = () => {
   // --- Estado da Aplicação (gerencia qual tela está visível) ---
-  const [appState, setAppState] = useState<'LOGIN' | 'REGISTER' | 'MAIN_MENU' | 'SETTINGS' | 'GAME'>('LOGIN');
+  const [appState, setAppState] = useState<'LOGIN' | 'REGISTER' | 'MAIN_MENU' | 'SETTINGS' | 'LOADING' | 'GAME'>('LOGIN');
 
   // --- Estado do Jogo (gerencia o fluxo dentro da tela GAME) ---
-  const [gameState, setGameState] = useState<'CLASS_SELECTION' | 'BATTLE' | 'DIALOGUE' | 'GAME_OVER'>('CLASS_SELECTION');
+  const [gameState, setGameState] = useState<'CLASS_SELECTION' | 'BATTLE' | 'DIALOGUE' | 'GAME_OVER' | 'PAUSE'>('CLASS_SELECTION');
 
   // --- Estado do Diálogo ---
   const [dialogueData, setDialogueData] = useState<DialogueLine[] | null>(null);
@@ -40,14 +40,30 @@ export const useGameLogic = () => {
   const [gameOverMessage, setGameOverMessage] = useState<string>('');
   const [modifiedOptions, setModifiedOptions] = useState<string[] | null>(null);
   const [gameMessage, setGameMessage] = useState<string | null>(null);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   // --- Funções de Navegação Global ---
   const handleGoToLogin = () => setAppState('LOGIN');
   const handleGoToRegister = () => setAppState('REGISTER');
   const handleLoginSuccess = () => setAppState('MAIN_MENU');
   const handleGoToMainMenu = () => setAppState('MAIN_MENU');
   const handleGoToSettings = () => setAppState('SETTINGS');
-  const handleStartNewGame = () => setAppState('GAME');
+
+    const handleStartNewGame = () => {
+    // Muda o estado para 'GAME' e 'CLASS_SELECTION'
+    setAppState('GAME');
+    setGameState('CLASS_SELECTION');
+  };
+    const handleGoToLoading = () => {
+    setAppState('LOADING');
+  };
+
+  const handlePauseGame = () => {
+    setGameState('PAUSE');
+  };
+
+  const handleResumeGame = () => {
+    setGameState('BATTLE');
+  };
 
   // --- Funções de Diálogo ---
   const handleStartDialogue = (dialogues: DialogueLine[], nextState: 'BATTLE' | 'GAME_OVER') => {
@@ -66,6 +82,24 @@ export const useGameLogic = () => {
       setGameState('BATTLE'); // Retorna para a batalha quando o diálogo terminar
     }
   };
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'p' || event.key === 'P') {
+        if (appState === 'GAME' && gameState === 'BATTLE') {
+          handlePauseGame();
+        } else if (appState === 'GAME' && gameState === 'PAUSE') {
+          handleResumeGame();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [appState, gameState]); // Dependências do efeito
 
   // --- Efeito de Verificação de Fim de Jogo ---
   useEffect(() => {
@@ -155,7 +189,7 @@ export const useGameLogic = () => {
     handleGoToMainMenu,
     handleGoToSettings,
     handleStartNewGame,
-
+    setAppState,
     gameState,
     player,
     enemy,
@@ -174,5 +208,9 @@ export const useGameLogic = () => {
     currentDialogue: dialogueData ? dialogueData[currentDialogueIndex] : null,
     handleStartDialogue,
     handleAdvanceDialogue,
+    isLoading,
+    handleGoToLoading,
+    handlePauseGame,
+    handleResumeGame,
   };
 };

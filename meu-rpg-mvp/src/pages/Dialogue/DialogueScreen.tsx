@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import '../Styles/DialogueScreen.css';
+import './DialogueScreen.css';
 
 interface DialogueLine {
   speaker: string;

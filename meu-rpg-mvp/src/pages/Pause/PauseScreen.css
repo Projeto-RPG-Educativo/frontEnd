@@ -1,0 +1,63 @@
+.pause-menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.pause-menu-box {
+  background-color: #2a2a2a;
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border: 4px solid #5d4037;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pause-menu-box h1 {
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.pause-menu-box button {
+  padding: 10px 20px;
+  font-size: 10px;
+  cursor: pointer;
+  text-align: center;
+  background-color: #2e2e2e;
+  border: 3px solid #5d4037;
+  border-right-color: #8d6e63;
+  border-bottom-color: #8d6e63;
+  border-top-color: #3e2723;
+  border-left-color: #3e2723;
+  color: #fff;
+  border-radius: 20px;
+  font-family: 'Press Start 2P', cursive;
+  text-transform: uppercase;
+  width: 250px;
+  align-items: center;
+  gap: 20px;
+  justify-content: center;
+  height: 45px;
+}
+
+.pause-menu-box button:hover {
+  box-shadow: 0 0 10px #ffcc00;
+  border-color: #ffcc00;
+}
+
+.pause-menu-box button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}

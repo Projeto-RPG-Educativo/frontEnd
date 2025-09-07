@@ -9,14 +9,15 @@ import SettingsScreen from './features/Settings/SettingsScreen';
 import ClassSelectionScreen from './pages/ClassSelection/ClassSelectionScreen';
 import BattleScreen from './pages/Battle/BattleScreen';
 import DialogueScreen from './pages/Dialogue/DialogueScreen';
-// --- Adicione a importação do GameDataBank para usar os dados globais ---
 import { classDefinitions, questionsDb } from './GameDataBank';
-import GoblinEstudado from './assets/GoblinEstudado.png'; // Importe a imagem do inimigo
 import GameOverScreen from './pages/GameOver/GameOverScreen';
+import LoadingScreen from './pages/Loading/LoadingScreen';
+import PauseScreen from './pages/Pause/PauseScreen';
 
 const App: React.FC = () => {
     const {
         appState,
+        setAppState,
         handleLoginSuccess,
         handleGoToLogin,
         handleGoToRegister,
@@ -36,7 +37,16 @@ const App: React.FC = () => {
         handleStartDialogue,
         handleAdvanceDialogue,
         goToClassSelection,
+        isLoading,
+        handleGoToLoading,
+        handlePauseGame,
+        handleResumeGame,
+        gameOverMessage,
+    
     } = useGameLogic();
+     const handleLoadingComplete = () => {
+    handleStartNewGame();
+  };
 
     const renderAppScreen = () => {
         switch (appState) {
@@ -45,9 +55,11 @@ const App: React.FC = () => {
             case 'REGISTER':
                 return <RegisterScreen onRegisterSuccess={handleGoToLogin} onGoToLogin={handleGoToLogin} />;
             case 'MAIN_MENU':
-                return <MainMenu onStartNewGame={handleStartNewGame} onGoToSettings={handleGoToSettings} />;
+                 return <MainMenu onStartNewGame={() => handleGoToLoading()} onGoToSettings={handleGoToSettings} />;
             case 'SETTINGS':
                 return <SettingsScreen onGoToMainMenu={handleGoToMainMenu} onSaveGame={() => {}} onLoadGame={() => {}} />;
+             case 'LOADING':
+                    return <LoadingScreen onLoadingComplete={handleLoadingComplete} />;
             case 'GAME':
                 const gameContent = renderGameContent();
                 const dialogueOverlay = (gameState === 'DIALOGUE' && dialogueData) ? (
@@ -64,17 +76,26 @@ const App: React.FC = () => {
                   <GameOverScreen message="Você perdeu! parabens seu saco de coco." onRestart={goToClassSelection} />
                 ) : null;
                 
-                return (
-                    <>
-                        {gameContent}
-                        {dialogueOverlay}
-                        {gameOverOverlay}
-                    </>
-                );
-            default:
-                return null;
-        }
-    };
+               const pauseOverlay = gameState === 'PAUSE' ? (
+          <PauseScreen
+            onResume={handleResumeGame}
+            onGoToMainMenu={handleGoToMainMenu}
+            onGoToSettings={() => setAppState('SETTINGS')} // Adiciona a navegação para Settings
+          />
+        ) : null;
+        
+        return (
+          <>
+            {gameContent}
+            {dialogueOverlay}
+            {gameOverOverlay}
+            {pauseOverlay} {/* Renderiza o overlay de pausa */}
+          </>
+        );
+      default:
+        return null;
+    }
+  };
 
     const renderGameContent = () => {
         switch (gameState) {
@@ -96,6 +117,7 @@ const App: React.FC = () => {
                         modifiedOptions={null}
                         gameMessage={null}
                         classDefinitions={classDefinitions}
+                        onPauseGame={handlePauseGame}
                     />
                 );
             case 'GAME_OVER':
@@ -108,7 +130,7 @@ const App: React.FC = () => {
                 return null;
         }
     };
-
+    
     return (
         <FullscreenProvider>
             <Layout>
