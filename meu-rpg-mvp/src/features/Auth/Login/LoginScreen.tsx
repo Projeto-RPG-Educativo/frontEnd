@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../Styles/LoginScreen.css';
+import './LoginScreen.css';
 
 interface LoginScreenProps {
   onLoginSuccess: () => void;

@@ -2,17 +2,17 @@ import React from 'react';
 import { useGameLogic } from './UseGameLogic';
 import { FullscreenProvider } from './components/Layout/FullscreenContext';
 import Layout from './components/Layout/Layout';
-import LoginScreen from './components/pages/LoginScreen';
-import RegisterScreen from './components/pages/RegisterScreen';
-import MainMenu from './components/pages/MainMenu';
-import SettingsScreen from './components/pages/SettingsScreen';
-import ClassSelectionScreen from './components/pages/ClassSelectionScreen';
-import BattleScreen from './components/pages/BattleScreen';
-import DialogueScreen from './components/pages/DialogueScreen';
+import LoginScreen from './features/Auth/Login/LoginScreen';
+import RegisterScreen from './features/Auth/Login/RegisterScreen';
+import MainMenu from './features/MainMenu/MainMenu';
+import SettingsScreen from './features/Settings/SettingsScreen';
+import ClassSelectionScreen from './pages/ClassSelection/ClassSelectionScreen';
+import BattleScreen from './pages/Battle/BattleScreen';
+import DialogueScreen from './pages/Dialogue/DialogueScreen';
 // --- Adicione a importação do GameDataBank para usar os dados globais ---
 import { classDefinitions, questionsDb } from './GameDataBank';
 import GoblinEstudado from './assets/GoblinEstudado.png'; // Importe a imagem do inimigo
-import GameOverScreen from './components/pages/GameOverScreen';
+import GameOverScreen from './pages/GameOver/GameOverScreen';
 
 const App: React.FC = () => {
     const {
