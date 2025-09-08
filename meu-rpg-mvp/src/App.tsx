@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useGameLogic } from './UseGameLogic';
 import { FullscreenProvider } from './components/Layout/FullscreenContext';
 import Layout from './components/Layout/Layout';
@@ -13,6 +14,12 @@ import { classDefinitions, questionsDb } from './GameDataBank';
 import GameOverScreen from './pages/GameOver/GameOverScreen';
 import LoadingScreen from './pages/Loading/LoadingScreen';
 import PauseScreen from './pages/Pause/PauseScreen';
+import InventoryScreen from './pages/Inventory/InventoryScreen';
+import StatusScreen from './pages/Status/StatusScreen';
+import QuestScreen from './pages/Quests/QuestScreen';
+import CodexScreen from './pages/Codex/CodexScreen';
+import HelpScreen from './pages/Help/HelpScreen';
+import ConfirmationScreen from './pages/Confirmation/ConfirmationScreen';
 
 const App: React.FC = () => {
     const {
@@ -24,7 +31,8 @@ const App: React.FC = () => {
         handleGoToMainMenu,
         handleGoToSettings,
         handleStartNewGame,
-
+        handleCloseInventory,
+        isInventoryOpen,
         gameState,
         player, // Importe o player
         enemy, // Importe o inimigo
@@ -37,11 +45,20 @@ const App: React.FC = () => {
         handleStartDialogue,
         handleAdvanceDialogue,
         goToClassSelection,
-        isLoading,
         handleGoToLoading,
         handlePauseGame,
         handleResumeGame,
-        gameOverMessage,
+        isStatsOpen,
+        handleCloseStats,
+        isQuestsOpen,
+        handleCloseQuests,
+        isCodexOpen,
+        handleCloseCodex,
+        isHelpOpen,
+        handleCloseHelp,
+        isConfirmationOpen, 
+        handleOpenConfirmation, 
+        handleCloseConfirmation,
     
     } = useGameLogic();
      const handleLoadingComplete = () => {
@@ -79,8 +96,33 @@ const App: React.FC = () => {
                const pauseOverlay = gameState === 'PAUSE' ? (
           <PauseScreen
             onResume={handleResumeGame}
-            onGoToMainMenu={handleGoToMainMenu}
+             onGoToMainMenu={handleOpenConfirmation} // Abre a confirmação ao tentar voltar ao menu
             onGoToSettings={() => setAppState('SETTINGS')} // Adiciona a navegação para Settings
+          />
+        ) : null;
+
+        const inventoryOverlay = isInventoryOpen ? (
+          <InventoryScreen onGoToMainMenu={handleCloseInventory} />
+        ) : null;
+
+         const statusOverlay = isStatsOpen ? (
+          <StatusScreen player={player} onClose={handleCloseStats} />
+        ) : null;
+
+         const questsOverlay = isQuestsOpen ? (
+          <QuestScreen onClose={handleCloseQuests} />
+        ) : null;
+        const codexOverlay = isCodexOpen ? (
+          <CodexScreen onClose={handleCloseCodex} />
+        ) : null;
+        const helpOverlay = isHelpOpen ? (
+          <HelpScreen onClose={handleCloseHelp} />
+        ) : null;
+        const confirmationOverlay = isConfirmationOpen ? (
+          <ConfirmationScreen
+            message="Tem certeza que deseja voltar ao menu principal? O progresso não salvo será perdido."
+            onConfirm={handleGoToMainMenu}
+            onCancel={handleCloseConfirmation}
           />
         ) : null;
         
@@ -90,6 +132,12 @@ const App: React.FC = () => {
             {dialogueOverlay}
             {gameOverOverlay}
             {pauseOverlay} {/* Renderiza o overlay de pausa */}
+            {inventoryOverlay} {/* Renderiza o overlay do inventário */}
+            {statusOverlay} {/* Renderiza o overlay de status */}
+            {questsOverlay} {/* Renderiza o overlay de missões */}
+            {codexOverlay} {/* Renderiza o overlay do códex */}
+            {helpOverlay} {/* Renderiza o overlay de ajuda */}
+            {confirmationOverlay} {/* Renderiza o overlay de confirmação */}
           </>
         );
       default:

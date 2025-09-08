@@ -1,0 +1,124 @@
+.codex-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 900px;
+  max-height: 700px;
+  background-color: #2a2a2a;
+  border: 4px solid #5d4037;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  font-family: 'Press Start 2P', cursive;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.codex-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.codex-header h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.codex-close-button {
+  padding: 10px 20px;
+  font-size: 10px;
+  cursor: pointer;
+  text-align: center;
+  background-color: #2e2e2e;
+  border: 3px solid #5d4037;
+  border-right-color: #8d6e63;
+  border-bottom-color: #8d6e63;
+  border-top-color: #3e2723;
+  border-left-color: #3e2723;
+  color: #fff;
+  border-radius: 20px;
+  font-family: 'Press Start 2P', cursive;
+  text-transform: uppercase;
+  width: 100px;
+  height: 45px;
+}
+
+.codex-close-button:hover {
+  box-shadow: 0 0 10px #ffcc00;
+  border-color: #ffcc00;
+}
+
+.codex-close-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.codex-content {
+  display: flex;
+  gap: 20px;
+  flex-grow: 1;
+}
+
+.codex-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 250px;
+  padding: 10px;
+  background-color: #444;
+  border: 2px solid #5d4037;
+  border-radius: 5px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.codex-entry-button {
+  padding: 10px 20px;
+  font-size: 10px;
+  cursor: pointer;
+  background-color: #2e2e2e;
+  border: 3px solid #5d4037;
+  border-right-color: #8d6e63;
+  border-bottom-color: #8d6e63;
+  border-top-color: #3e2723;
+  border-left-color: #3e2723;
+  color: #fff;
+  border-radius: 20px;
+  font-family: 'Press Start 2P', cursive;
+  text-transform: uppercase;
+  text-align: left; 
+  width: 100%;
+  height: auto;
+}
+
+.codex-entry-button.active,
+.codex-entry-button:hover {
+  box-shadow: 0 0 10px #ffcc00;
+  border-color: #ffcc00;
+ 
+}
+
+.codex-main {
+  flex-grow: 1;
+  background-color: #444;
+  padding: 20px;
+  border: 2px solid #5d4037;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+
+.codex-main h2 {
+    font-size: 1.5rem;
+    margin-top: 0;
+}
+
+.codex-main p {
+    font-size: 1rem;
+    line-height: 1.5;
+}

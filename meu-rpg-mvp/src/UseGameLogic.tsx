@@ -41,6 +41,13 @@ export const useGameLogic = () => {
   const [modifiedOptions, setModifiedOptions] = useState<string[] | null>(null);
   const [gameMessage, setGameMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isInventoryOpen, setIsInventoryOpen] = useState(false)
+  const [isStatsOpen, setIsStatsOpen] = useState(false);
+  const [isQuestsOpen, setIsQuestsOpen] = useState(false);
+  const [isCodexOpen, setIsCodexOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false); 
+
   // --- Funções de Navegação Global ---
   const handleGoToLogin = () => setAppState('LOGIN');
   const handleGoToRegister = () => setAppState('REGISTER');
@@ -48,7 +55,58 @@ export const useGameLogic = () => {
   const handleGoToMainMenu = () => setAppState('MAIN_MENU');
   const handleGoToSettings = () => setAppState('SETTINGS');
 
-    const handleStartNewGame = () => {
+   const handleOpenInventory = () => {
+    setIsInventoryOpen(true);
+  };
+
+  const handleCloseInventory = () => {
+    setIsInventoryOpen(false);
+  };
+
+   const handleOpenStats = () => {
+    setIsStatsOpen(true);
+  };
+
+  const handleCloseStats = () => {
+    setIsStatsOpen(false);
+  };
+ // --- Funções de Missões ---
+  const handleOpenQuests = () => {
+    setIsQuestsOpen(true);
+  };
+
+  const handleCloseQuests = () => {
+    setIsQuestsOpen(false);
+  };
+
+   // --- Funções de Codex ---
+  const handleOpenCodex = () => {
+    setIsCodexOpen(true);
+  };
+
+  const handleCloseCodex = () => {
+    setIsCodexOpen(false);
+  };
+
+  // --- Funções de Help ---
+  const handleOpenHelp = () => {
+    setIsHelpOpen(true);
+  };
+
+  const handleCloseHelp = () => {
+    setIsHelpOpen(false);
+  };
+
+  // --- Funções de Confirmação ---
+  const handleOpenConfirmation = () => {
+    setIsConfirmationOpen(true);
+  };
+
+  const handleCloseConfirmation = () => {
+    setIsConfirmationOpen(false);
+  };
+
+  const handleStartNewGame = () => {
     // Muda o estado para 'GAME' e 'CLASS_SELECTION'
     setAppState('GAME');
     setGameState('CLASS_SELECTION');
@@ -83,14 +141,38 @@ export const useGameLogic = () => {
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === 'p' || event.key === 'P') {
-        if (appState === 'GAME' && gameState === 'BATTLE') {
+      if (appState === 'GAME' && gameState === 'BATTLE') {
+        if (event.key === 'p' || event.key === 'P') {
           handlePauseGame();
-        } else if (appState === 'GAME' && gameState === 'PAUSE') {
-          handleResumeGame();
         }
+        if (event.key === 'i' || event.key === 'I') {
+          handleOpenInventory();
+        }
+        if (event.key === 'o' || event.key === 'O') {
+          handleOpenStats();
+        }
+        if (event.key === 'q' || event.key === 'Q') {
+          handleOpenQuests();
+        }
+        if (event.key === 'c' || event.key === 'C') {
+          handleOpenCodex();
+        }
+        if (event.key === 'h' || event.key === 'H') {
+          handleOpenHelp();
+        }
+       } else if (isInventoryOpen && (event.key === 'i' || event.key === 'I')) {
+          handleCloseInventory();
+      } else if (isStatsOpen && (event.key === 'o' || event.key === 'O')) {
+          handleCloseStats();
+      } else if (isQuestsOpen && (event.key === 'q' || event.key === 'Q')) {
+          handleCloseQuests();
+      } else if (isCodexOpen && (event.key === 'c' || event.key === 'C')) {
+          handleCloseCodex();
+      } else if (gameState === 'PAUSE' && isConfirmationOpen && (event.key === 'p' || event.key === 'P')) {
+          // Fechar o modal de confirmação e voltar para o menu de pausa
+          handleCloseConfirmation();
       }
     };
 
@@ -99,7 +181,7 @@ export const useGameLogic = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [appState, gameState]); // Dependências do efeito
+  }, [appState, gameState, isInventoryOpen, isStatsOpen, isQuestsOpen, isCodexOpen, isConfirmationOpen]);
 
   // --- Efeito de Verificação de Fim de Jogo ---
   useEffect(() => {
@@ -212,5 +294,20 @@ export const useGameLogic = () => {
     handleGoToLoading,
     handlePauseGame,
     handleResumeGame,
+    handleOpenInventory,
+    handleCloseInventory,
+    isInventoryOpen,
+    isStatsOpen,
+    handleCloseStats,
+    isQuestsOpen, 
+    handleCloseQuests, 
+    isCodexOpen,
+    handleCloseCodex,
+    isHelpOpen,
+    handleCloseHelp, 
+    isConfirmationOpen,
+    handleOpenConfirmation,
+    handleCloseConfirmation,
+
   };
 };
