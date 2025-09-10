@@ -5,7 +5,7 @@ import {
   type Player,
   type Enemy,
   type Question,
-  questionsDb,
+  QuestionsDb,
 } from './GameDataBank';
 import GoblinEstudado from './assets/GoblinEstudado.png'; 
 
@@ -33,10 +33,12 @@ export const useGameLogic = () => {
     hp: 100,
     maxHp: 100,
     damage: 20,
+    mana: 100,
+    maxMana: 100,
     image: GoblinEstudado, 
   });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [currentQuestion, setCurrentQuestion] = useState<Question>(questionsDb[0]);
+  const [currentQuestion, setCurrentQuestion] = useState<Question>(QuestionsDb[0]);
   const [gameOverMessage, setGameOverMessage] = useState<string>('');
   const [modifiedOptions, setModifiedOptions] = useState<string[] | null>(null);
   const [gameMessage, setGameMessage] = useState<string | null>(null);
@@ -47,6 +49,9 @@ export const useGameLogic = () => {
   const [isCodexOpen, setIsCodexOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false); 
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isDefending, setIsDefending] = useState(false);
+
 
   // --- Funções de Navegação Global ---
   const handleGoToLogin = () => setAppState('LOGIN');
@@ -105,6 +110,15 @@ export const useGameLogic = () => {
   const handleCloseConfirmation = () => {
     setIsConfirmationOpen(false);
   };
+
+  // --- Funções de Quiz ---
+  const handleQuizOpen = () => {
+    setIsQuizOpen(true);
+  }
+
+  const handleQuizClose = () => {
+    setIsQuizOpen(false);
+  }
 
   const handleStartNewGame = () => {
     // Muda o estado para 'GAME' e 'CLASS_SELECTION'
@@ -196,6 +210,43 @@ useEffect(() => {
     }
   }, [player, enemy.hp]);
 
+
+   const handleAttack = () => {
+    if (!player) return;
+    const damage = player.damage;
+    const newEnemyHp = enemy.hp - damage;
+    setEnemy({ ...enemy, hp: newEnemyHp });
+    showGameMessage(`Você atacou o ${enemy.name} e causou ${damage} de dano!`);
+    // Lógica para o turno do inimigo vir em seguida...
+  };
+
+  const handleDefend = () => {
+    setIsDefending(true);
+    showGameMessage("Você está em posição de defesa.");
+    // Lógica para o turno do inimigo vir em seguida...
+  };
+
+  const handleUseItem = () => {
+    if (!player) return;
+    // Por enquanto, vamos apenas simular a cura
+    const healAmount = 30;
+    const newHp = Math.min(player.maxHp, player.hp + healAmount);
+    setPlayer({ ...player, hp: newHp });
+    showGameMessage(`Você usou um item e curou ${healAmount} de HP.`);
+    // Lógica para o turno do inimigo vir em seguida...
+  };
+
+  const handleFlee = () => {
+    // Chance de 50% de fugir
+    if (Math.random() > 0.5) {
+      handleStartDialogue([{ speaker: "Herói", text: "Você conseguiu fugir com sucesso!" }], 'GAME_OVER');
+      handleGoToMainMenu();
+    } else {
+      showGameMessage("Sua fuga falhou!");
+      // Lógica para o turno do inimigo vir em seguida...
+    }
+  };
+
   // --- Funções de Lógica do Jogo ---
   const showGameMessage = (message: string) => {
     setGameMessage(message);
@@ -209,34 +260,38 @@ useEffect(() => {
       className: className,
       ...selectedClass.stats,
       abilityUsed: false,
-      image: selectedClass.image, 
+      image: selectedClass.image,
+      mana: 10,
+      maxMana: 100, 
     });
     setGameState('BATTLE');
   };
 
-   const handleAnswer = (selectedOption: string) => {
+    const handleAnswer = (selectedOption: string) => {
     if (!player || gameState !== 'BATTLE') return;
     const isCorrect = selectedOption === currentQuestion.correctAnswer;
     
     if (isCorrect) {
       const playerDamage = player.damage;
       const newEnemyHp = enemy.hp - playerDamage;
-      setEnemy({ ...enemy, hp: newEnemyHp });
+      const manaGained = 20; // Mana ganha por resposta correta
+      const newPlayerMana = Math.min(player.maxMana, player.mana + manaGained);
       
+      setEnemy({ ...enemy, hp: newEnemyHp });
+      setPlayer({ ...player, mana: newPlayerMana });
+
       const nextQuestionIndex = currentQuestionIndex + 1;
-      handleStartDialogue([{ speaker: "Herói", text: "Resposta correta! Ponto para a minha sabedoria!" }], 'BATTLE');
-      // Lógica de avanço da pergunta
-      if (nextQuestionIndex < questionsDb.length) {
+      handleStartDialogue([{ speaker: "Herói", text: "Resposta correta! Minha energia se renova!" }], 'BATTLE');
+      
+      if (nextQuestionIndex < QuestionsDb.length) {
         setCurrentQuestionIndex(nextQuestionIndex);
-        setCurrentQuestion(questionsDb[nextQuestionIndex]);
+        setCurrentQuestion(QuestionsDb[nextQuestionIndex]);
       } else {
-        // Se todas as perguntas acabaram, você venceu o jogo
         setGameOverMessage("Parabéns! Você derrotou o Goblin da Gramática!");
         setGameState('GAME_OVER');
       }
       
     } else {
-      // Lógica de erro...
       const newPlayerHp = player.hp - enemy.damage;
       setPlayer({ ...player, hp: newPlayerHp });
 
@@ -249,11 +304,14 @@ useEffect(() => {
     }
     setGameMessage(null);
   };
-  
-  const handleUseAbility = () => {
-    if (!player || player.abilityUsed) return;
-    setPlayer(p => ({ ...p!, abilityUsed: true }));
-    // Lógica das habilidades...
+
+   const handleUseAbility = () => {
+    if (!player || player.abilityUsed || player.mana < 50) return; // Habilidade custa 50 de mana
+    setPlayer(p => ({ ...p!, abilityUsed: true, mana: p!.mana - 50 }));
+    // A habilidade pode causar um dano maior aqui
+    const abilityDamage = player.damage * 2;
+    const newEnemyHp = enemy.hp - abilityDamage;
+    setEnemy({ ...enemy, hp: newEnemyHp });
     handleStartDialogue([{ speaker: "Herói", text: "Usando minha habilidade especial!" }], 'BATTLE');
   };
 
@@ -308,6 +366,15 @@ useEffect(() => {
     isConfirmationOpen,
     handleOpenConfirmation,
     handleCloseConfirmation,
+    isQuizOpen,
+    onOpenQuiz: handleQuizOpen,
+    onCloseQuiz: handleQuizClose,
+    handleAttack, // Nova função de ataque
+    handleDefend, // Nova função de defesa
+    handleUseItem, // Nova função de usar item
+    handleFlee, // Nova função de fugir
+    isDefending, 
+
 
   };
 };

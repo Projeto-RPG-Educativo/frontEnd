@@ -17,6 +17,8 @@ export interface Player {
   className: ClassName;
   hp: number;
   maxHp: number;
+  mana: number;
+  maxMana: number;
   damage: number;
   abilityUsed: boolean;
   image: string; // Adicionado: URL da imagem do jogador
@@ -31,6 +33,8 @@ export interface Enemy {
   hp: number;
   maxHp: number;
   damage: number;
+  mana: number;
+  maxMana: number;
   image: string; // Adicionado: URL da imagem do inimigo
 }
 
@@ -93,7 +97,7 @@ export const classDefinitions = {
 };
 
 // --- Banco de Dados de Perguntas ---
-export const questionsDb: Question[] = [
+export const QuestionsDb: Question[] = [
   { text: "She ___ a doctor.", options: ["is", "are", "am"], correctAnswer: "is", difficulty: 'normal' },
   { text: "They ___ from Canada.", options: ["is", "are", "am"], correctAnswer: "are", difficulty: 'normal' },
   { text: "What time ___ it?", options: ["is", "are", "be"], correctAnswer: "is", difficulty: 'normal' },
