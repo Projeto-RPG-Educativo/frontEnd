@@ -8,7 +8,7 @@ import RegisterScreen from './features/Auth/Login/RegisterScreen';
 import MainMenu from './features/MainMenu/MainMenu';
 import SettingsScreen from './features/Settings/SettingsScreen';
 import ClassSelectionScreen from './pages/ClassSelection/ClassSelectionScreen';
-import BattleScreen from './pages/Battle/Rpg/BattleScreen';
+import BattleScreen from './pages/Battle/BattleScreen';
 import DialogueScreen from './pages/Dialogue/DialogueScreen';
 import { classDefinitions, QuestionsDb } from './GameDataBank';
 import GameOverScreen from './pages/GameOver/GameOverScreen';

@@ -1,15 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import './LoadingScreen.css';
-import li1 from '../../assets/loadingImage/li1.jpeg';
-import li2 from '../../assets/loadingImage/li2.jpeg';
-import li3 from '../../assets/loadingImage/li3.jpeg';
+import li1 from '../../assets/LoadingImage/li1.jpg';
 
 // Lista de imagens para o fundo (coloque aqui os caminhos para suas imagens)
 const backgroundImages = [
-  li1,
-  li2,
-  li3,
+  li1
 ];
 
 // Lista de dicas para o jogo
