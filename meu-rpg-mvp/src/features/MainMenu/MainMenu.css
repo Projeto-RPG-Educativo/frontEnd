@@ -1,9 +1,9 @@
 /* Container de toda a tela, com a imagem de fundo */
 .main-menu-container {
-  width: 110vw;
+  width: 100vw; /* Ajustado para 100vw para garantir o preenchimento da largura */
   height: 100vh;
-  background-image: url('/src/assets/baixados.jpeg'); /* Substitua pelo caminho da sua imagem */
-  background-size: cover;
+  background-image: url('/src/assets/Main.jpg'); /* Substitua pelo caminho da sua imagem */
+  background-size: cover; /* Garante que a imagem cubra todo o container, cortando se necessário */
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
