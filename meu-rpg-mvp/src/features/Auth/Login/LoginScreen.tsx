@@ -1,11 +1,32 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 import './LoginScreen.css';
 
 interface LoginScreenProps {
   onLoginSuccess: () => void;
   onGoToRegister: () => void;
 }
+
+const containerVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 10,
+      delayChildren: 0.3,
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onGoToRegister }) => {
   const [username, setUsername] = useState('');
@@ -14,11 +35,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onGoToRegiste
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Linha para o login de teste. Se as credenciais forem 'testuser' e 'testpass', o login é um sucesso.
     if (username === 'user' && password === '123') {
       console.log('Login de teste bem-sucedido!');
       onLoginSuccess();
-      return; // Interrompe a função para não chamar a API
+      return;
     }
 
     try {
@@ -36,7 +56,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onGoToRegiste
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const statusCode = error.response.status;
-
         if (statusCode === 404) {
           alert('Usuário não encontrado. Por favor, registre-se.');
           onGoToRegister();
@@ -52,10 +71,27 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onGoToRegiste
 
   return (
     <div className="login-screen-container">
-      <div className="login-form-wrapper">
-        <h1 className="login-title">LOGIN</h1>
-        <form onSubmit={handleLogin} className="login-form">
-          <div className="input-group">
+      <motion.div
+        className="login-form-wrapper"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.h1
+          className="login-title"
+          variants={itemVariants}
+        >
+          LOGIN
+        </motion.h1>
+        <motion.form
+          onSubmit={handleLogin}
+          className="login-form"
+          variants={containerVariants}
+        >
+          <motion.div
+            className="input-group"
+            variants={itemVariants}
+          >
             <label htmlFor="username">Usuário</label>
             <input
               id="username"
@@ -64,8 +100,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onGoToRegiste
               onChange={(e) => setUsername(e.target.value)}
               className="login-input"
             />
-          </div>
-          <div className="input-group">
+          </motion.div>
+          <motion.div
+            className="input-group"
+            variants={itemVariants}
+          >
             <label htmlFor="password">Senha</label>
             <input
               id="password"
@@ -74,15 +113,27 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onGoToRegiste
               onChange={(e) => setPassword(e.target.value)}
               className="login-input"
             />
-          </div>
-          <button type="submit" className="login-button">
+          </motion.div>
+          <motion.button
+            type="submit"
+            className="login-button"
+            variants={itemVariants}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             ENTRAR
-          </button>
-        </form>
-        <button className="secondary-button" onClick={onGoToRegister}>
+          </motion.button>
+        </motion.form>
+        <motion.button
+          className="secondary-button"
+          onClick={onGoToRegister}
+          variants={itemVariants}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           Ainda não tem conta? Clique para registrar
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     </div>
   );
 };
