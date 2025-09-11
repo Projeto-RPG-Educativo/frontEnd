@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import api from '../../services/api'; // Usando nossa instância centralizada da API
-import './RegisterScreen.css';     // Usando um CSS próprio (que vamos criar)
+import '../LoginScreen/LoginScreen.css';     // Usando um CSS próprio (que vamos criar)
 
 interface RegisterScreenProps {
   onRegisterSuccess: () => void;
