@@ -1,5 +1,5 @@
-import React from 'react';
-import { useFullscreen } from '../../../contexts/FullscreenContext'; // Este é o caminho correto
+import React, { useState } from 'react';
+import { useFullscreen } from '../../contexts/FullscreenContext'; // Este é o caminho correto
 import './SettingsScreen.css';
 
 interface SettingsScreenProps {
@@ -10,7 +10,7 @@ interface SettingsScreenProps {
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ onGoToMainMenu, onSaveGame, onLoadGame }) => {
     const { toggleFullScreen } = useFullscreen();
-    const [difficulty, setDifficulty] = React.useState<'easy' | 'normal' | 'hard'>('normal');
+    const [difficulty, setDifficulty] = useState<'easy' | 'normal' | 'hard'>('normal');
 
     return (
         <div className="settings-screen-container">

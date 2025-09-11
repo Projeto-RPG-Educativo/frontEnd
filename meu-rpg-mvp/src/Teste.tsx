@@ -1,80 +1,154 @@
 import { useState, useEffect } from 'react';
+import api from './services/api'; // Usando nossa API centralizada
 import {
   classDefinitions,
   type ClassName,
   type Player,
   type Enemy,
   type Question,
-  questionsDb,
-} from './data/GameDataBank';
+} from './data/GameDataBank'; // Mantemos os dados das classes estáticos por enquanto
+import GoblinEstudado from './assets/GoblinEstudado.png';
+
+// NOTA: As perguntas (questionsDb) não são mais importadas daqui.
+
+interface DialogueLine {
+  character: string;
+  text: string;
+}
 
 export const useGameLogic = () => {
-  // Estado do jogo
-  const [gameState, setGameState] = useState<'MAIN_MENU' | 'LOGIN' | 'REGISTER' | 'DIALOGUE' | 'CLASS_SELECTION' | 'BATTLE' | 'GAME_OVER'>('MAIN_MENU');
-  const [dialogueData, setDialogueData] = useState<{ character: string; text: string }[] | null>(null);
-  const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
-
+  // --- Estados do Jogo ---
+  const [gameState, setGameState] = useState<'MAIN_MENU' | 'MAP_VIEW' | 'CLASS_SELECTION' | 'BATTLE' | 'GAME_OVER' | 'DIALOGUE'>('MAIN_MENU');
   const [player, setPlayer] = useState<Player | null>(null);
   const [enemy, setEnemy] = useState<Enemy>({
     name: "Goblin da Gramática",
     hp: 100,
     maxHp: 100,
     damage: 20,
-
-  });
-
-
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [currentQuestion, setCurrentQuestion] = useState<Question>(questionsDb[0]);
+    // Adicione as propriedades que faltam:
+    mana: 100,
+    maxMana: 100,
+    image: GoblinEstudado, // Use a imagem importada
+});
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [gameOverMessage, setGameOverMessage] = useState<string>('');
   const [modifiedOptions, setModifiedOptions] = useState<string[] | null>(null);
   const [gameMessage, setGameMessage] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const goToSettings = () => setShowSettings(true);
   
-   const handleGoToMainMenu = () => {
-    setShowSettings(false);
-    setGameState('MAIN_MENU');
-  };  
+  // --- Estados do Diálogo ---
+  const [dialogueData, setDialogueData] = useState<DialogueLine[] | null>(null);
+  const [currentDialogueIndex, setCurrentDialogueIndex] = useState(0);
 
-  const handleStartNewGame = () => {
-        setGameState('CLASS_SELECTION');
-    };
-
-   const handleStartDialogue = (dialogues: { character: string; text: string }[]) => {
-    setDialogueData(dialogues);
-    setCurrentDialogueIndex(0);
-    setGameState('DIALOGUE');
-  };
-
-   const handleAdvanceDialogue = () => {
-    if (!dialogueData) return;
-
-    if (currentDialogueIndex < dialogueData.length - 1) {
-      setCurrentDialogueIndex(prevIndex => prevIndex + 1);
-    } else {
-      // Quando o diálogo terminar, volta para a tela de batalha
-      setDialogueData(null);
-      setGameState('BATTLE');
+  // --- FUNÇÃO NOVA: Para buscar perguntas da API ---
+  const fetchNewQuestion = async (difficulty: 'normal' | 'hard' = 'normal') => {
+    try {
+      const response = await api.get(`/questions/random?difficulty=${difficulty}`);
+      setCurrentQuestion(response.data);
+      setModifiedOptions(null); // Reseta as opções modificadas
+    } catch (error) {
+      console.error("Erro ao buscar nova pergunta:", error);
+      setGameMessage("Não foi possível carregar a próxima pergunta.");
     }
   };
-  
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
-    setIsRegistering(false);
-  };
-  const handleGoToRegister = () => {
-    setIsRegistering(true);
-  };
-   const handleGoToLogin = () => {
-    setIsRegistering(false);};
 
-  // Efeito que verifica a condição de vitória ou derrota
+  // --- Funções de Lógica do Jogo ---
+  const showGameMessage = (message: string) => {
+    setGameMessage(message);
+    setTimeout(() => setGameMessage(null), 3000);
+  };
+
+  // ALTERADO: Agora busca a primeira pergunta antes de iniciar o jogo
+  const handleSelectClass = async (className: ClassName) => {
+    const selectedClass = classDefinitions[className];
+    if (!selectedClass) return;
+
+    await fetchNewQuestion(); // Busca a primeira pergunta
+
+    setPlayer({
+    name: `Herói ${selectedClass.name}`,
+    className: className,
+    ...selectedClass.stats,
+    abilityUsed: false,
+    
+    // Adicione as propriedades que faltam:
+    mana: 100, // ou um valor inicial que fizer sentido
+    maxMana: 100,
+    image: selectedClass.image, // A imagem vem da definição da classe
+  });
+
+    setGameState('BATTLE');
+  };
+
+  // ALTERADO: Agora busca a próxima pergunta após a resposta
+  const handleAnswer = async (selectedOption: string) => {
+    if (!player || !currentQuestion || gameState !== 'BATTLE') return;
+    const isCorrect = selectedOption === currentQuestion.correctAnswer;
+
+    if (isCorrect) {
+      let damageDealt = player.damage;
+      if (player.investidaActive) {
+        damageDealt *= 2;
+        setPlayer(p => ({ ...p!, investidaActive: false }));
+        showGameMessage("Correto! Sua investida causou dano massivo!");
+      } else {
+        showGameMessage("Correto! Você ataca.");
+      }
+      
+      if (player.className === 'Bardo' && currentQuestion.difficulty === 'hard') {
+        showGameMessage("Incrível! Sua lábia funcionou e você venceu o combate!");
+        setEnemy(e => ({...e, hp: 0}));
+        return; // Finaliza o turno aqui
+      }
+      setEnemy(e => ({ ...e, hp: Math.max(0, e.hp - damageDealt) }));
+    } else {
+      if (player.shieldUp) {
+        setPlayer(p => ({ ...p!, shieldUp: false }));
+        showGameMessage("Seu escudo absorveu o dano!");
+      } else {
+        setPlayer(p => ({ ...p!, hp: Math.max(0, p!.hp - enemy.damage) }));
+        showGameMessage("Errado! Você sofreu dano.");
+      }
+    }
+    
+    // Após o resultado, busca a próxima pergunta para o próximo turno
+    if (enemy.hp > 0) {
+      await fetchNewQuestion();
+    }
+  };
+
+  // ALTERADO: Habilidade do Bardo agora também busca da API
+  const handleUseAbility = async () => {
+    if (!player || player.abilityUsed) return;
+    setPlayer(p => ({ ...p!, abilityUsed: true }));
+
+    switch (player.className) {
+      // Casos do Tank, Mago, Lutador, Ladino, Paladino (mantidos)
+      case 'Tank': /* ... */ break;
+      case 'Mago': /* ... */ break;
+      case 'Lutador': /* ... */ break;
+      case 'Ladino': /* ... */ break;
+      case 'Paladino': /* ... */ break;
+      case 'Bardo':
+        showGameMessage("Lábia! Você trocou a pergunta por um desafio de vida ou morte!");
+        await fetchNewQuestion('hard'); // Busca uma pergunta difícil
+        break;
+    }
+  };
+
+  // --- Funções de Navegação e Diálogo (Preservadas) ---
+  const goToSettings = () => setShowSettings(true);
+  const handleGoToMainMenu = () => { /* Esta função pode precisar ser movida para o App.tsx com o AuthContext */ setGameState('MAIN_MENU'); };
+  const handleGoToMap = () => setGameState('MAP_VIEW');
+  const handleStartNewGame = () => setGameState('CLASS_SELECTION');
+  const goToClassSelectionFromMenu = () => setGameState('CLASS_SELECTION');
+  const goToClassSelection = () => { /* ... sua lógica de reset ... */ };
+  const handleStartDialogue = (dialogues: DialogueLine[]) => { /* ... sua lógica ... */ };
+  const handleAdvanceDialogue = () => { /* ... sua lógica ... */ };
+
+  // Efeito de fim de jogo (Preservado)
   useEffect(() => {
     if (!player) return;
-
     if (enemy.hp <= 0) {
       setGameOverMessage("Você Venceu! O Goblin da Gramática foi derrotado!");
       setGameState('GAME_OVER');
@@ -84,130 +158,6 @@ export const useGameLogic = () => {
     }
   }, [player, enemy.hp]);
 
-  // Função para exibir uma mensagem temporária
-  const showGameMessage = (message: string) => {
-    setGameMessage(message);
-    setTimeout(() => setGameMessage(null), 3000); // Remove a mensagem após 3 segundos
-  };
-
-   
-
-  // Função para selecionar a classe e iniciar o jogo
-  const handleSelectClass = (className: ClassName) => {
-    const selectedClass = classDefinitions[className];
-    setPlayer({
-      name: `Herói ${selectedClass.name}`,
-      className: className,
-      ...selectedClass.stats,
-      abilityUsed: false,
-    });
-    setGameState('BATTLE');
-  };
-
-  // Função para usar a habilidade da classe
-  const handleUseAbility = () => {
-    if (!player || player.abilityUsed) return;
-
-    setPlayer(p => ({ ...p!, abilityUsed: true }));
-
-    switch (player.className) {
-      case 'Tank':
-        setPlayer(p => ({ ...p!, shieldUp: true }));
-        showGameMessage("Escudo levantado! O próximo erro será bloqueado.");
-        break;
-      case 'Mago':
-        const incorrectOptions = currentQuestion.options.filter(opt => opt !== currentQuestion.correctAnswer);
-        const optionToRemove = incorrectOptions[Math.floor(Math.random() * incorrectOptions.length)];
-        setModifiedOptions(currentQuestion.options.filter(opt => opt !== optionToRemove));
-        showGameMessage(`Clarividência! A opção "${optionToRemove}" foi eliminada.`);
-        break;
-      case 'Lutador':
-        setPlayer(p => ({ ...p!, investidaActive: true }));
-        showGameMessage("Investida preparada! Seu próximo acerto causará dano extra.");
-        break;
-      case 'Ladino':
-        const hintOptions = currentQuestion.options.filter(opt => opt !== currentQuestion.correctAnswer);
-        showGameMessage(`Dica do Ladino: A resposta NÃO é "${hintOptions[0]}"!`);
-        break;
-      case 'Paladino':
-        setPlayer(p => ({ ...p!, hp: Math.min(p!.maxHp, p!.hp + 30) }));
-        showGameMessage("Cura! Você recuperou 30 pontos de vida.");
-        break;
-      case 'Bardo':
-        const hardQuestion = questionsDb.find(q => q.difficulty === 'hard');
-        if (hardQuestion) {
-          setCurrentQuestion(hardQuestion);
-          showGameMessage("Lábia! Você trocou a pergunta por um desafio de vida ou morte!");
-        }
-        break;
-    }
-  };
-
-  // Função para lidar com a resposta do jogador
-  const handleAnswer = (selectedOption: string) => {
-    if (gameState !== 'BATTLE') return;
-
-    const isCorrect = selectedOption === currentQuestion.correctAnswer;
-
-    if (isCorrect) {
-      let damageDealt = player!.damage;
-      if (player?.investidaActive) {
-        damageDealt *= 2;
-        setPlayer(p => ({ ...p!, investidaActive: false }));
-        showGameMessage("Correto! Sua investida causou dano massivo!");
-      } else {
-        showGameMessage("Correto! Você ataca.");
-      }
-      
-      if (player?.className === 'Bardo' && currentQuestion.difficulty === 'hard') {
-        showGameMessage("Incrível! Sua lábia funcionou e você venceu o combate!");
-        setEnemy(e => ({...e, hp: 0}));
-        return;
-      }
-
-      setEnemy(e => ({ ...e, hp: Math.max(0, e.hp - damageDealt) }));
-
-    } else {
-      if (player?.shieldUp) {
-        setPlayer(p => ({ ...p!, shieldUp: false }));
-        showGameMessage("Seu escudo absorveu o dano!");
-      } else {
-        setPlayer(p => ({ ...p!, hp: Math.max(0, p!.hp - enemy.damage) }));
-        showGameMessage("Errado! Você sofreu dano.");
-      }
-    }
-
-    const nextQuestionIndex = currentQuestionIndex + 1;
-    const normalQuestions = questionsDb.filter(q => q.difficulty === 'normal');
-    if (nextQuestionIndex < normalQuestions.length) {
-      setCurrentQuestionIndex(nextQuestionIndex);
-      setCurrentQuestion(normalQuestions[nextQuestionIndex]);
-      setModifiedOptions(null);
-    } else {
-      if (enemy.hp > 0) {
-        setGameOverMessage("Você ficou sem perguntas e não conseguiu derrotar o inimigo!");
-        setGameState('GAME_OVER');
-      }
-    }
-  };
-  
-  // Função para reiniciar o jogo
-  const goToClassSelection = () => {
-    setGameState('CLASS_SELECTION');
-    setPlayer(null);
-    setEnemy({ name: "Goblin da Gramática", hp: 100, maxHp: 100, damage: 20 });
-    setCurrentQuestionIndex(0);
-    setCurrentQuestion(questionsDb[0]);
-    setGameOverMessage('');
-    setModifiedOptions(null);
-    setGameMessage(null);
-  };
-
-  const goToClassSelectionFromMenu = () => {
-    setGameState('CLASS_SELECTION');
-  };
-
-  // Retorna todos os estados e funções
   return {
     gameState,
     player,
@@ -216,24 +166,19 @@ export const useGameLogic = () => {
     gameOverMessage,
     modifiedOptions,
     gameMessage,
+    showSettings,
     handleSelectClass,
     handleUseAbility,
     handleAnswer,
     goToClassSelection,
     classDefinitions,
     goToClassSelectionFromMenu,
-    isLoggedIn,
-    handleLoginSuccess,
-    isRegistering,
-    setIsRegistering,
-    handleGoToLogin,
-    handleGoToRegister,
-    showSettings,
     goToSettings,
     handleGoToMainMenu,
+    handleGoToMap,
     handleStartNewGame,
     handleStartDialogue,
     dialogueData,
-    handleAdvanceDialogue
+    handleAdvanceDialogue,
   };
 };

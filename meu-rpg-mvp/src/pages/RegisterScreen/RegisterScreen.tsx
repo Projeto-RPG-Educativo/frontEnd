@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import api from '../../../../services/api'; // Usando nossa instância centralizada da API
-import './RegisterScreen.css';     // Usando o CSS co-localizado
+import api from '../../services/api'; // Usando nossa instância centralizada da API
+import './RegisterScreen.css';     // Usando um CSS próprio (que vamos criar)
 
 interface RegisterScreenProps {
   onRegisterSuccess: () => void;
@@ -26,11 +26,11 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
     };
 
     try {
-      // Usamos api.post e apenas a parte final da URL, pois a base já está configurada
+      // Usamos a URL que funcionou no nosso teste: /api/usuarios
       const response = await api.post('/api/usuarios', userData);
 
       if (response.status === 201) {
-        alert('Registro bem-sucedido! Agora você será redirecionado para a tela de login.');
+        alert('Registro bem-sucedido! Você será redirecionado para a tela de login.');
         onRegisterSuccess();
       }
     } catch (err: any) {
@@ -43,47 +43,27 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
   };
 
   return (
-    <div className="register-screen-container"> {/* Use uma classe específica se precisar de estilos diferentes */}
-      <div className="form-wrapper">
-        <h1 className="title">REGISTRAR</h1>
-        <form onSubmit={handleRegister} className="form">
+    <div className="login-screen-container">
+      <div className="login-form-wrapper">
+        <h1 className="login-title">REGISTRAR</h1>
+        <form onSubmit={handleRegister} className="login-form">
+          {/* ... seu JSX para os inputs de nome, email e senha ... */}
           <div className="input-group">
             <label htmlFor="name">Nome</label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="input"
-              required
-            />
+            <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} className="login-input" required />
           </div>
           <div className="input-group">
             <label htmlFor="email">E-mail</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="input"
-              required
-            />
+            <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="login-input" required />
           </div>
           <div className="input-group">
             <label htmlFor="password">Senha</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input"
-              required
-            />
+            <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="login-input" required />
           </div>
 
           {error && <p className="error-message">{error}</p>}
 
-          <button type="submit" className="button" disabled={isLoading}>
+          <button type="submit" className="login-button" disabled={isLoading}>
             {isLoading ? 'CRIANDO...' : 'CRIAR CONTA'}
           </button>
         </form>

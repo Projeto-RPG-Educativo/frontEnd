@@ -1,0 +1,9 @@
+.player {
+  width: 40px;
+  height: 40px;
+  background-color: #3498db; /* Azul, para representar o jogador */
+  border: 2px solid #2980b9;
+  border-radius: 5px;
+  position: absolute; /* Essencial para a movimentação */
+  transition: top 0.1s linear, left 0.1s linear; /* Deixa o movimento mais suave */
+}

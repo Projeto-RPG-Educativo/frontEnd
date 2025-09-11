@@ -1,6 +1,6 @@
 import React from 'react';
 import './Layout.css';
-import ButtonsMain from '../Buttons/ButtonsMain'; 
+import ButtonsMain from '../Buttons/ButtonsMain';
 import ButtonsHeader from '../Buttons/ButtonsHeader';
 import { useFullscreen } from '../../contexts/FullscreenContext';
 

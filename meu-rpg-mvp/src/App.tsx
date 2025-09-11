@@ -1,14 +1,16 @@
-import React, { useContext } from 'react'; // 1. Importe o 'useContext'
-import { AuthProvider, AuthContext } from './contexts/AuthContext'; // 2. Importe o Contexto e o Provedor
+import React, { useContext, useState } from 'react';
+import { AuthProvider, AuthContext } from './contexts/AuthContext';
 import { useGameLogic } from './hooks/UseGameLogic';
 import { FullscreenProvider } from './contexts/FullscreenContext';
 import Layout from './components/Layout/Layout';
-import LoginScreen from './pages/features/Auth/Login/LoginScreen';
-import RegisterScreen from './pages/features/Auth/Login/RegisterScreen';
-import MainMenu from './pages/features/MainMenu/MainMenu';
-import SettingsScreen from './pages/features/Settings/SettingsScreen';
+
+// Importando as páginas da nova estrutura de pastas
+import LoginScreen from './pages/LoginScreen/LoginScreen';
+import RegisterScreen from './pages/RegisterScreen/RegisterScreen';
+import MainMenu from './pages/MainMenu/MainMenu';
+import SettingsScreen from './pages/SettingsScreen/SettingsScreen';
 import ClassSelectionScreen from './pages/ClassSelection/ClassSelectionScreen';
-import BattleScreen from './pages/Battle/BattleScreen';
+import BattleScreen from './pages/BattleScreen/BattleScreen';
 import DialogueScreen from './pages/Dialogue/DialogueScreen';
 import GameOverScreen from './pages/GameOver/GameOverScreen';
 import LoadingScreen from './pages/Loading/LoadingScreen';
@@ -19,59 +21,38 @@ import QuestScreen from './pages/Quests/QuestScreen';
 import CodexScreen from './pages/Codex/CodexScreen';
 import HelpScreen from './pages/Help/HelpScreen';
 import ConfirmationScreen from './pages/Confirmation/ConfirmationScreen';
+import MapScreen from './pages/MapScreen/MapScreen';
 import { classDefinitions } from './data/GameDataBank';
 
-// O componente App agora foca apenas em renderizar as telas corretas
+// Componente App focado apenas em renderizar as telas corretas
 const App: React.FC = () => {
-  // 3. Pegamos as informações de login DIRETAMENTE do contexto
-  const { isLoggedIn, login, logout } = useContext(AuthContext); // (adicionamos logout para uso futuro)
+  const { isLoggedIn, login, logout } = useContext(AuthContext);
 
-  // 4. A lista de itens do useGameLogic fica muito mais limpa
   const {
-    gameState,
-    player,
-    enemy,
-    currentQuestion,
-    dialogueData,
-    currentDialogueIndex,
-    handleSelectClass,
-    handleAnswer,
-    handleUseAbility,
-    handleStartDialogue,
-    handleAdvanceDialogue,
-    goToClassSelection,
-    handlePauseGame,
-    handleResumeGame,
-    isInventoryOpen, handleCloseInventory,
-    isStatsOpen, handleCloseStats,
-    isQuestsOpen, handleCloseQuests,
-    isCodexOpen, handleCloseCodex,
-    isHelpOpen, handleCloseHelp,
-    isConfirmationOpen, handleOpenConfirmation, handleCloseConfirmation,
-    handleAttack,
-    handleFlee,
-    handleUseItem,
-    handleDefend,
+    gameState, player, enemy, currentQuestion, dialogueData, currentDialogueIndex,
+    gameMessage, modifiedOptions, gameOverMessage,
+    handleSelectClass, handleAnswer, handleUseAbility, handleStartDialogue,
+    handleAdvanceDialogue, goToClassSelection, handlePauseGame, handleResumeGame,
+    isInventoryOpen, handleCloseInventory, isStatsOpen, handleCloseStats,
+    isQuestsOpen, handleCloseQuests, isCodexOpen, handleCloseCodex,
+    isHelpOpen, handleCloseHelp, isConfirmationOpen, handleOpenConfirmation,
+    handleCloseConfirmation, handleAttack, handleFlee, handleUseItem, handleDefend,
+    handleGoToMap, onOpenQuiz, isQuizOpen,
+    handleGoToMainMenu, handleStartNewGame
   } = useGameLogic();
 
-
-  // 5. A lógica principal agora se divide em duas partes:
-  // O que mostrar se NÃO estiver logado vs. o que mostrar se ESTIVER logado.
-
+  // Lógica de renderização principal: ou mostra Login/Registro, ou mostra o Jogo.
   if (!isLoggedIn) {
-    // Para simplificar, vamos criar o estado de registro aqui mesmo
-    const [isRegistering, setIsRegistering] = React.useState(false);
-    
+    const [isRegistering, setIsRegistering] = useState(false);
     if (isRegistering) {
-      // Após o registro, o usuário é enviado para a tela de login
       return <RegisterScreen onRegisterSuccess={() => setIsRegistering(false)} onGoToLogin={() => setIsRegistering(false)} />;
     } else {
-      // A LoginScreen agora recebe a função 'login' do nosso contexto
       return <LoginScreen onLoginSuccess={login} onGoToRegister={() => setIsRegistering(true)} />;
     }
   }
 
-  // Se o usuário ESTIVER LOGADO, renderizamos o jogo:
+  // --- Renderização do Jogo para um usuário LOGADO ---
+  
   const renderGameContent = () => {
     switch (gameState) {
       case 'CLASS_SELECTION':
@@ -85,7 +66,7 @@ const App: React.FC = () => {
             onStartDialogue={handleStartDialogue}
             onAnswer={handleAnswer}
             onUseAbility={handleUseAbility}
-            onGoToMenu={() => { /* Navegar para o menu aqui */ }}
+            onGoToMenu={handleGoToMainMenu}
             player={player}
             enemy={enemy}
             handleAttack={handleAttack}
@@ -93,44 +74,65 @@ const App: React.FC = () => {
             handleUseItem={handleUseItem}
             handleFlee={handleFlee}
             currentQuestion={currentQuestion}
-            modifiedOptions={null}
-            gameMessage={null}
-            onPauseGame={handlePauseGame} 
-            onOpenQuiz={() => {}} 
-            isQuizOpen={false} 
+            onPauseGame={handlePauseGame}
+            onOpenQuiz={onOpenQuiz}
+            isQuizOpen={isQuizOpen}
             classDefinitions={classDefinitions}
+            gameMessage={gameMessage}
+            modifiedOptions={modifiedOptions}
           />
         );
-      // ... todos os outros cases de gameState (GAME_OVER, etc.)
+      case 'GAME_OVER':
+        return <GameOverScreen message={gameOverMessage} onRestart={goToClassSelection} />;
+      case 'MAP_VIEW':
+        return <MapScreen />;
+      case 'MAIN_MENU':
       default:
-        // Por padrão, se o usuário está logado, ele vai para o Menu Principal
-        return <MainMenu onStartNewGame={goToClassSelection} onGoToSettings={() => {}} />;
+        return <MainMenu onStartNewGame={handleStartNewGame} onGoToSettings={() => { /* Implementar goToSettings no hook */ }} onLogout={logout} />;
     }
   };
 
-  // Lógica dos Overlays (Pop-ups)
-  const dialogueOverlay = (gameState === 'DIALOGUE' && dialogueData) ? (
+  // ***** A CORREÇÃO ESTÁ AQUI *****
+  // Reintroduzimos a definição das constantes de overlay que estavam faltando.
+  const dialogueOverlay = (gameState === 'DIALOGUE' && dialogueData && player && enemy) ? (
     <DialogueScreen
-      dialogueData={dialogueData ?? []}
+      dialogueData={dialogueData}
       currentDialogueIndex={currentDialogueIndex}
       onAdvanceDialogue={handleAdvanceDialogue}
-      characterImages={{ 'Herói': player?.image, 'Goblin': enemy?.image }}
+      characterImages={{ 'Herói': player.image, 'Goblin': enemy.image }}
     />
   ) : null;
-
-  // ... adicione aqui a renderização de outros overlays que você tinha (Pause, Inventory, etc.)
+  
+  const pauseOverlay = gameState === 'PAUSE' ? ( <PauseScreen onResume={handleResumeGame} onGoToMainMenu={handleOpenConfirmation} onGoToSettings={() => {}} /> ) : null;
+  const inventoryOverlay = isInventoryOpen ? <InventoryScreen onGoToMainMenu={handleCloseInventory} /> : null;
+  const statusOverlay = isStatsOpen ? <StatusScreen player={player} onClose={handleCloseStats} /> : null;
+  const questsOverlay = isQuestsOpen ? <QuestScreen onClose={handleCloseQuests} /> : null;
+  const codexOverlay = isCodexOpen ? <CodexScreen onClose={handleCloseCodex} /> : null;
+  const helpOverlay = isHelpOpen ? <HelpScreen onClose={handleCloseHelp} /> : null;
+  const confirmationOverlay = isConfirmationOpen ? (
+    <ConfirmationScreen
+      message="Tem certeza que deseja voltar ao menu principal? O progresso não salvo será perdido."
+      onConfirm={handleGoToMainMenu}
+      onCancel={handleCloseConfirmation}
+    />
+  ) : null;
 
   return (
     <>
       {renderGameContent()}
       {dialogueOverlay}
-      {/* ... outros overlays ... */}
+      {pauseOverlay}
+      {inventoryOverlay}
+      {statusOverlay}
+      {questsOverlay}
+      {codexOverlay}
+      {helpOverlay}
+      {confirmationOverlay}
     </>
   );
 };
 
-
-// O AppWrapper é o componente principal que exportamos
+// O AppWrapper é o componente principal que exportamos, ele provê todos os contextos e o layout
 const AppWrapper: React.FC = () => {
   return (
     <AuthProvider>

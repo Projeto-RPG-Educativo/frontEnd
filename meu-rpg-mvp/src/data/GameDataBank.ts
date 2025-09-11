@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // GameDataBank.ts
 
 // --- Imports de Imagens ---
@@ -12,17 +13,33 @@ import Bard from '../assets/Bard.jpg';
 // --- Interfaces de Dados ---
 export type ClassName = 'Tank' | 'Mago' | 'Lutador' | 'Ladino' | 'Paladino' | 'Bardo';
 
+=======
+import Tank from "../assets/Tank.jpg"
+import Mage from "../assets/Mage.jpg";
+import Fighter from "../assets/Fighter.jpg";
+import Rogue from "../assets/Rogue.jpg";
+import Paladin from "../assets/Paladin.jpg";
+import Bard from "../assets/Bard.jpg";
+
+
+export type ClassName = 'Tank' | 'Mago' | 'Lutador' | 'Ladino' | 'Paladino' | 'Bardo';
+>>>>>>> copiaMurilo
 export interface Player {
   name: string;
   className: ClassName;
   hp: number;
   maxHp: number;
+<<<<<<< HEAD
   mana: number;
   maxMana: number;
   damage: number;
   abilityUsed: boolean;
   image: string; // Adicionado: URL da imagem do jogador
   
+=======
+  damage: number;
+  abilityUsed: boolean;
+>>>>>>> copiaMurilo
   // Propriedades específicas de habilidades
   shieldUp?: boolean;
   investidaActive?: boolean;
@@ -33,9 +50,12 @@ export interface Enemy {
   hp: number;
   maxHp: number;
   damage: number;
+<<<<<<< HEAD
   mana: number;
   maxMana: number;
   image: string; // Adicionado: URL da imagem do inimigo
+=======
+>>>>>>> copiaMurilo
 }
 
 export interface Question {
@@ -45,6 +65,7 @@ export interface Question {
   difficulty: 'normal' | 'hard';
 }
 
+<<<<<<< HEAD
 export interface DialogueLine {
   speaker: string;
   text: string;
@@ -98,10 +119,25 @@ export const classDefinitions = {
 
 // --- Banco de Dados de Perguntas ---
 export const QuestionsDb: Question[] = [
+=======
+// Definição das Classes e Banco de Perguntas
+export const classDefinitions = {
+  Tank: { name: 'Tank', description: 'EU AGUENTO - Levanta um escudo que bloqueia o próximo ataque ao errar.', stats: { hp: 150, maxHp: 150, damage: 15 }, image: Tank },
+  Mago: { name: 'Mago', description: 'CLARIVIDÊNCIA - Usa magia para eliminar uma das respostas incorretas.', stats: { hp: 100, maxHp: 100, damage: 25 }, image: Mage },
+  Lutador: { name: 'Lutador', description: 'INVESTIDA - Prepara um ataque poderoso que causa dano extra no próximo acerto.', stats: { hp: 120, maxHp: 120, damage: 20 }, image: Fighter },
+  Ladino: { name: 'Ladino', description: 'ROUBO - Usa sua astúcia para conseguir uma dica sobre a resposta.', stats: { hp: 110, maxHp: 110, damage: 20 }, image: Rogue },
+  Paladino: { name: 'Paladino', description: 'CURA - Invoca a luz para recuperar 30 pontos de vida.', stats: { hp: 130, maxHp: 130, damage: 18 }, image: Paladin },
+  Bardo: { name: 'Bardo', description: 'LÁBIA - Tenta confundir o inimigo com uma pergunta muito difícil. Se acertar, vence o combate instantaneamente.', stats: { hp: 100, maxHp: 100, damage: 15 }, image: Bard },
+};
+
+// Banco de dados de perguntas do nosso MVP
+export const questionsDb: Question[] = [
+>>>>>>> copiaMurilo
   { text: "She ___ a doctor.", options: ["is", "are", "am"], correctAnswer: "is", difficulty: 'normal' },
   { text: "They ___ from Canada.", options: ["is", "are", "am"], correctAnswer: "are", difficulty: 'normal' },
   { text: "What time ___ it?", options: ["is", "are", "be"], correctAnswer: "is", difficulty: 'normal' },
   { text: "I ___ watching TV right now.", options: ["is", "are", "am"], correctAnswer: "am", difficulty: 'normal' },
+<<<<<<< HEAD
   { text: "___ you ever ___ to Japan?", options: ["Have / been", "Has / been", "Did / went"], correctAnswer: "Have / been", difficulty: 'hard' },
 ];
 
@@ -120,3 +156,8 @@ export const initialDialogues = {
     { speaker: "Herói", text: "Aaaargh... que dor..." },
   ],
 };
+=======
+  // Pergunta difícil para o Bardo
+  { text: "___ you ever ___ to Japan?", options: ["Have / been", "Has / been", "Did / went"], correctAnswer: "Have / been", difficulty: 'hard' },
+];
+>>>>>>> copiaMurilo
