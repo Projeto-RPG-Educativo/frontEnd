@@ -1,5 +1,5 @@
 import './ButtonsMain.css';
-import { useFullscreen } from '../Layout/FullscreenContext';
+import { useFullscreen } from '../../contexts/FullscreenContext';
 
 
 export default function ButtonsMain() {

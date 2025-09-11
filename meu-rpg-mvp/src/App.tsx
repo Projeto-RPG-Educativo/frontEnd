@@ -1,16 +1,15 @@
-import React from 'react';
-
-import { useGameLogic } from './UseGameLogic';
-import { FullscreenProvider } from './components/Layout/FullscreenContext';
+import React, { useContext } from 'react'; // 1. Importe o 'useContext'
+import { AuthProvider, AuthContext } from './contexts/AuthContext'; // 2. Importe o Contexto e o Provedor
+import { useGameLogic } from './hooks/UseGameLogic';
+import { FullscreenProvider } from './contexts/FullscreenContext';
 import Layout from './components/Layout/Layout';
-import LoginScreen from './features/Auth/Login/LoginScreen';
-import RegisterScreen from './features/Auth/Login/RegisterScreen';
-import MainMenu from './features/MainMenu/MainMenu';
-import SettingsScreen from './features/Settings/SettingsScreen';
+import LoginScreen from './pages/features/Auth/Login/LoginScreen';
+import RegisterScreen from './pages/features/Auth/Login/RegisterScreen';
+import MainMenu from './pages/features/MainMenu/MainMenu';
+import SettingsScreen from './pages/features/Settings/SettingsScreen';
 import ClassSelectionScreen from './pages/ClassSelection/ClassSelectionScreen';
 import BattleScreen from './pages/Battle/BattleScreen';
 import DialogueScreen from './pages/Dialogue/DialogueScreen';
-import { classDefinitions, QuestionsDb } from './GameDataBank';
 import GameOverScreen from './pages/GameOver/GameOverScreen';
 import LoadingScreen from './pages/Loading/LoadingScreen';
 import PauseScreen from './pages/Pause/PauseScreen';
@@ -20,23 +19,19 @@ import QuestScreen from './pages/Quests/QuestScreen';
 import CodexScreen from './pages/Codex/CodexScreen';
 import HelpScreen from './pages/Help/HelpScreen';
 import ConfirmationScreen from './pages/Confirmation/ConfirmationScreen';
+import { classDefinitions } from './data/GameDataBank';
 
+// O componente App agora foca apenas em renderizar as telas corretas
 const App: React.FC = () => {
+  // 3. Pegamos as informações de login DIRETAMENTE do contexto
+  const { isLoggedIn, login, logout } = useContext(AuthContext); // (adicionamos logout para uso futuro)
+
+  // 4. A lista de itens do useGameLogic fica muito mais limpa
   const {
-    appState,
-    setAppState,
-    handleLoginSuccess,
-    handleGoToLogin,
-    handleGoToRegister,
-    handleGoToMainMenu,
-    handleGoToSettings,
-    handleStartNewGame,
-    handleCloseInventory,
-    isInventoryOpen,
     gameState,
-    player, // Importe o player
-    enemy, // Importe o inimigo
-    currentQuestion, // Importe a pergunta
+    player,
+    enemy,
+    currentQuestion,
     dialogueData,
     currentDialogueIndex,
     handleSelectClass,
@@ -45,160 +40,107 @@ const App: React.FC = () => {
     handleStartDialogue,
     handleAdvanceDialogue,
     goToClassSelection,
-    handleGoToLoading,
     handlePauseGame,
     handleResumeGame,
-    isStatsOpen,
-    handleCloseStats,
-    isQuestsOpen,
-    handleCloseQuests,
-    isCodexOpen,
-    handleCloseCodex,
-    isHelpOpen,
-    handleCloseHelp,
-    isConfirmationOpen,
-    handleOpenConfirmation,
-    handleCloseConfirmation,
+    isInventoryOpen, handleCloseInventory,
+    isStatsOpen, handleCloseStats,
+    isQuestsOpen, handleCloseQuests,
+    isCodexOpen, handleCloseCodex,
+    isHelpOpen, handleCloseHelp,
+    isConfirmationOpen, handleOpenConfirmation, handleCloseConfirmation,
     handleAttack,
     handleFlee,
     handleUseItem,
     handleDefend,
-
-
-
-
   } = useGameLogic();
-  const handleLoadingComplete = () => {
-    handleStartNewGame();
-  };
 
-  const renderAppScreen = () => {
-    switch (appState) {
-      case 'LOGIN':
-        return <LoginScreen onLoginSuccess={handleLoginSuccess} onGoToRegister={handleGoToRegister} />;
-      case 'REGISTER':
-        return <RegisterScreen onRegisterSuccess={handleGoToLogin} onGoToLogin={handleGoToLogin} />;
-      case 'MAIN_MENU':
-        return <MainMenu onStartNewGame={() => handleGoToLoading()} onGoToSettings={handleGoToSettings} />;
-      case 'SETTINGS':
-        return <SettingsScreen onGoToMainMenu={handleGoToMainMenu} onSaveGame={() => { }} onLoadGame={() => { }} />;
-      case 'LOADING':
-        return <LoadingScreen onLoadingComplete={handleLoadingComplete} />;
-      case 'GAME':
-        const gameContent = renderGameContent();
-        const dialogueOverlay = (gameState === 'DIALOGUE' && dialogueData) ? (
-          <DialogueScreen
-            dialogueData={dialogueData ?? []}
-            currentDialogueIndex={currentDialogueIndex}
-            onAdvanceDialogue={handleAdvanceDialogue}
-            characterImages={{
-              'Herói': player?.image,
-              'Goblin': enemy?.image
-            }} // Adicione as imagens aqui
-          />
-        ) : null;
-        const gameOverOverlay = gameState === 'GAME_OVER' ? (
-          <GameOverScreen message="Você perdeu! parabens seu saco de coco." onRestart={goToClassSelection} />
-        ) : null;
 
-        const pauseOverlay = gameState === 'PAUSE' ? (
-          <PauseScreen
-            onResume={handleResumeGame}
-            onGoToMainMenu={handleOpenConfirmation} // Abre a confirmação ao tentar voltar ao menu
-            onGoToSettings={() => setAppState('SETTINGS')} // Adiciona a navegação para Settings
-          />
-        ) : null;
+  // 5. A lógica principal agora se divide em duas partes:
+  // O que mostrar se NÃO estiver logado vs. o que mostrar se ESTIVER logado.
 
-        const inventoryOverlay = isInventoryOpen ? (
-          <InventoryScreen onGoToMainMenu={handleCloseInventory} />
-        ) : null;
-
-        const statusOverlay = isStatsOpen ? (
-          <StatusScreen player={player} onClose={handleCloseStats} />
-        ) : null;
-
-        const questsOverlay = isQuestsOpen ? (
-          <QuestScreen onClose={handleCloseQuests} />
-        ) : null;
-        const codexOverlay = isCodexOpen ? (
-          <CodexScreen onClose={handleCloseCodex} />
-        ) : null;
-        const helpOverlay = isHelpOpen ? (
-          <HelpScreen onClose={handleCloseHelp} />
-        ) : null;
-        const confirmationOverlay = isConfirmationOpen ? (
-          <ConfirmationScreen
-            message="Tem certeza que deseja voltar ao menu principal? O progresso não salvo será perdido."
-            onConfirm={handleGoToMainMenu}
-            onCancel={handleCloseConfirmation}
-          />
-        ) : null;
-
-        return (
-          <>
-            {gameContent}
-            {dialogueOverlay}
-            {gameOverOverlay}
-            {pauseOverlay} {/* Renderiza o overlay de pausa */}
-            {inventoryOverlay} {/* Renderiza o overlay do inventário */}
-            {statusOverlay} {/* Renderiza o overlay de status */}
-            {questsOverlay} {/* Renderiza o overlay de missões */}
-            {codexOverlay} {/* Renderiza o overlay do códex */}
-            {helpOverlay} {/* Renderiza o overlay de ajuda */}
-            {confirmationOverlay} {/* Renderiza o overlay de confirmação */}
-          </>
-        );
-      default:
-        return null;
+  if (!isLoggedIn) {
+    // Para simplificar, vamos criar o estado de registro aqui mesmo
+    const [isRegistering, setIsRegistering] = React.useState(false);
+    
+    if (isRegistering) {
+      // Após o registro, o usuário é enviado para a tela de login
+      return <RegisterScreen onRegisterSuccess={() => setIsRegistering(false)} onGoToLogin={() => setIsRegistering(false)} />;
+    } else {
+      // A LoginScreen agora recebe a função 'login' do nosso contexto
+      return <LoginScreen onLoginSuccess={login} onGoToRegister={() => setIsRegistering(true)} />;
     }
-  };
+  }
 
+  // Se o usuário ESTIVER LOGADO, renderizamos o jogo:
   const renderGameContent = () => {
     switch (gameState) {
       case 'CLASS_SELECTION':
         return <ClassSelectionScreen onSelectClass={handleSelectClass} />;
       case 'BATTLE':
         if (!player || !enemy || !currentQuestion) {
-          return <div>Carregando...</div>;
+          return <LoadingScreen onLoadingComplete={() => {}} />;
         }
         return (
           <BattleScreen
             onStartDialogue={handleStartDialogue}
             onAnswer={handleAnswer}
             onUseAbility={handleUseAbility}
-            onGoToMenu={handleGoToMainMenu}
+            onGoToMenu={() => { /* Navegar para o menu aqui */ }}
             player={player}
             enemy={enemy}
             handleAttack={handleAttack}
             handleDefend={handleDefend}
             handleUseItem={handleUseItem}
             handleFlee={handleFlee}
-
             currentQuestion={currentQuestion}
             modifiedOptions={null}
             gameMessage={null}
-            onPauseGame={handlePauseGame} onOpenQuiz={function (): void {
-              throw new Error('Function not implemented.');
-            }} isQuizOpen={false} />
+            onPauseGame={handlePauseGame} 
+            onOpenQuiz={() => {}} 
+            isQuizOpen={false} 
+            classDefinitions={classDefinitions}
+          />
         );
-      case 'GAME_OVER':
-        return (<div className="game-over-screen">
-          <h1>Game Over</h1>
-          <button onClick={handleGoToMainMenu}>Voltar ao Menu Principal</button>
-        </div>
-        );
+      // ... todos os outros cases de gameState (GAME_OVER, etc.)
       default:
-        return null;
+        // Por padrão, se o usuário está logado, ele vai para o Menu Principal
+        return <MainMenu onStartNewGame={goToClassSelection} onGoToSettings={() => {}} />;
     }
   };
 
+  // Lógica dos Overlays (Pop-ups)
+  const dialogueOverlay = (gameState === 'DIALOGUE' && dialogueData) ? (
+    <DialogueScreen
+      dialogueData={dialogueData ?? []}
+      currentDialogueIndex={currentDialogueIndex}
+      onAdvanceDialogue={handleAdvanceDialogue}
+      characterImages={{ 'Herói': player?.image, 'Goblin': enemy?.image }}
+    />
+  ) : null;
+
+  // ... adicione aqui a renderização de outros overlays que você tinha (Pause, Inventory, etc.)
+
   return (
-    <FullscreenProvider>
-      <Layout>
-        {renderAppScreen()}
-      </Layout>
-    </FullscreenProvider>
+    <>
+      {renderGameContent()}
+      {dialogueOverlay}
+      {/* ... outros overlays ... */}
+    </>
   );
 };
 
-export default App;
+
+// O AppWrapper é o componente principal que exportamos
+const AppWrapper: React.FC = () => {
+  return (
+    <AuthProvider>
+      <FullscreenProvider>
+        <Layout>
+          <App />
+        </Layout>
+      </FullscreenProvider>
+    </AuthProvider>
+  );
+};
+
+export default AppWrapper;

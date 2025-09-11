@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { type Player, type Enemy, type Question, type ClassName, classDefinitions } from '../../GameDataBank';
-import type { DialogueLine } from '../../GameDataBank';
+import { type Player, type Enemy, type Question, type ClassName, classDefinitions } from '../../data/GameDataBank';
+import type { DialogueLine } from '../../data/GameDataBank';
 import './BattleScreen.css';
 import BattleHUD from './BattleHUD';
 
@@ -16,6 +16,12 @@ interface BattleScreenProps {
   onGoToMenu: () => void;
   onStartDialogue: (dialogues: DialogueLine[], nextState: "BATTLE" | "GAME_OVER") => void;
   onPauseGame: () => void;
+  handleAttack: () => void;
+  handleDefend: () => void;
+  handleUseItem: () => void;
+  handleFlee: () => void;
+  onOpenQuiz: () => void;
+  isQuizOpen: boolean;
 }
 
 const BattleScreen: React.FC<BattleScreenProps> = ({

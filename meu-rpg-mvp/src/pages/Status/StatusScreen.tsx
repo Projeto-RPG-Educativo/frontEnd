@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import './StatusScreen.css';
-import { type Player } from '../../GameDataBank';
+import { type Player } from '../../data/GameDataBank';
 
 interface StatusScreenProps {
   player: Player | null;

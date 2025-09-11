@@ -1,12 +1,12 @@
 // GameDataBank.ts
 
 // --- Imports de Imagens ---
-import Tank from './assets/Tank.jpg';
-import Mage from './assets/Mage.jpg';
-import Fighter from './assets/Fighter.jpg';
-import Rogue from './assets/Rogue.jpg';
-import Paladin from './assets/Paladin.jpg';
-import Bard from './assets/Bard.jpg';
+import Tank from '../assets/Tank.jpg'
+import Mage from '../assets/Mage.jpg';
+import Fighter from '../assets/Fighter.jpg';
+import Rogue from '../assets/Rogue.jpg';
+import Paladin from '../assets/Paladin.jpg';
+import Bard from '../assets/Bard.jpg';
 // import GoblinImage from './assets/goblin.png'; adicionar nos assets uma imagem pro vilao
 
 // --- Interfaces de Dados ---

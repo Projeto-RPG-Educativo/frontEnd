@@ -6,7 +6,7 @@ import {
   type Enemy,
   type Question,
   questionsDb,
-} from './GameDataBank';
+} from './data/GameDataBank';
 
 export const useGameLogic = () => {
   // Estado do jogo

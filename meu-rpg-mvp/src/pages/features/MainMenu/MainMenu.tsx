@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion'; // Importa o motion
 import './MainMenu.css';
-import { useFullscreen } from '../../components/Layout/FullscreenContext';
+import { useFullscreen } from '../../../contexts/FullscreenContext';
 
 interface MainMenuProps {
   onStartNewGame: () => void;

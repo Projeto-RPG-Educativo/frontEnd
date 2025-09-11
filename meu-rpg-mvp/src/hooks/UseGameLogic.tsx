@@ -6,8 +6,8 @@ import {
   type Enemy,
   type Question,
   QuestionsDb,
-} from './GameDataBank';
-import GoblinEstudado from './assets/GoblinEstudado.png'; 
+} from '../data/GameDataBank'
+import GoblinEstudado from '../assets/GoblinEstudado.png'; 
 
 // --- Interface para os dados do diálogo ---
 interface DialogueLine {

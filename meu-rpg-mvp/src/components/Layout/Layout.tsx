@@ -2,7 +2,7 @@ import React from 'react';
 import './Layout.css';
 import ButtonsMain from '../Buttons/ButtonsMain'; 
 import ButtonsHeader from '../Buttons/ButtonsHeader';
-import { useFullscreen } from './FullscreenContext';
+import { useFullscreen } from '../../contexts/FullscreenContext';
 
 interface LayoutProps {
   children: React.ReactNode;

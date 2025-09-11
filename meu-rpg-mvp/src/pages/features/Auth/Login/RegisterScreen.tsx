@@ -1,33 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { motion } from 'framer-motion'; // Importa o motion
-import './LoginScreen.css';
+import './LoginScreen.css'; // Reutilizando os estilos
 
 interface RegisterScreenProps {
   onRegisterSuccess: () => void;
   onGoToLogin: () => void;
 }
-
-// 🎯 Variantes para as animações
-const containerVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: 'spring' as const,
-      stiffness: 100,
-      damping: 10,
-      delayChildren: 0.3,
-      staggerChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGoToLogin }) => {
   const [name, setName] = useState('');
@@ -37,14 +15,19 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // --- A CORREÇÃO CRÍTICA ESTÁ AQUI ---
+    // Criamos um novo objeto 'userData' que mapeia os nomes das variáveis do front-end
+    // para as chaves que o back-end espera.
     const userData = {
-      nome_usuario: name,
+      nome_usuario: name, // A variável 'name' vira a propriedade 'nome_usuario'
       email: email,
-      senha: password,
+      senha: password     // A variável 'password' vira a propriedade 'senha'
     };
 
     try {
-      const apiUrl = 'http://localhost:3000/api/usuarios/registrar';
+      const apiUrl = 'http://localhost:3000/api/usuarios';
+
+      // Agora enviamos o objeto 'userData' que tem o formato correto
       const response = await axios.post(apiUrl, userData);
 
       if (response.status === 201) {
@@ -53,6 +36,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
+        // Mostra a mensagem de erro que vem do back-end (ex: "Usuário já existe")
         alert(error.response.data.message || 'Erro ao registrar usuário.');
       } else {
         alert('Ocorreu um erro. Tente novamente mais tarde.');
@@ -63,27 +47,10 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
 
   return (
     <div className="login-screen-container">
-      <motion.div
-        className="login-form-wrapper"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.h1
-          className="login-title"
-          variants={itemVariants}
-        >
-          REGISTRAR
-        </motion.h1>
-        <motion.form
-          onSubmit={handleRegister}
-          className="login-form"
-          variants={containerVariants}
-        >
-          <motion.div
-            className="input-group"
-            variants={itemVariants}
-          >
+      <div className="login-form-wrapper">
+        <h1 className="login-title">REGISTRAR</h1>
+        <form onSubmit={handleRegister} className="login-form">
+          <div className="input-group">
             <label htmlFor="name">Nome</label>
             <input
               id="name"
@@ -92,11 +59,8 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
               onChange={(e) => setName(e.target.value)}
               className="login-input"
             />
-          </motion.div>
-          <motion.div
-            className="input-group"
-            variants={itemVariants}
-          >
+          </div>
+          <div className="input-group">
             <label htmlFor="email">E-mail</label>
             <input
               id="email"
@@ -105,11 +69,8 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
               onChange={(e) => setEmail(e.target.value)}
               className="login-input"
             />
-          </motion.div>
-          <motion.div
-            className="input-group"
-            variants={itemVariants}
-          >
+          </div>
+          <div className="input-group">
             <label htmlFor="password">Senha</label>
             <input
               id="password"
@@ -118,27 +79,15 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
               onChange={(e) => setPassword(e.target.value)}
               className="login-input"
             />
-          </motion.div>
-          <motion.button
-            type="submit"
-            className="login-button"
-            variants={itemVariants}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+          </div>
+          <button type="submit" className="login-button">
             CRIAR CONTA
-          </motion.button>
-        </motion.form>
-        <motion.button
-          className="secondary-button"
-          onClick={onGoToLogin}
-          variants={itemVariants}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
+          </button>
+        </form>
+        <button className="secondary-button" onClick={onGoToLogin}>
           Já tem uma conta? Faça Login
-        </motion.button>
-      </motion.div>
+        </button>
+      </div>
     </div>
   );
 };

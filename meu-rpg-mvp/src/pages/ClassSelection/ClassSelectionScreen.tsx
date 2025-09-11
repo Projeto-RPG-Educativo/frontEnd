@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { type ClassName, classDefinitions } from '../../GameDataBank';
+import { type ClassName, classDefinitions } from '../../data/GameDataBank';
 import './ClassSelectionScreen.css';
 
 type SelectedClass = typeof classDefinitions[keyof typeof classDefinitions];
