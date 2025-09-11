@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Função para executar quando o login for bem-sucedido
   const login = (token: string, userData: User) => {
+    console.log('AuthContext: Login bem-sucedido! Alterando isLoggedIn para true.');
     localStorage.setItem('authToken', token);
     setUser(userData);
     setIsLoggedIn(true);

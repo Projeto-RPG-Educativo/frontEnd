@@ -27,7 +27,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ onRegisterSuccess, onGo
 
     try {
       // Usamos a URL que funcionou no nosso teste: /api/usuarios
-      const response = await api.post('/api/usuarios', userData);
+      const response = await api.post('/api/usuarios/registrar', userData);
 
       if (response.status === 201) {
         alert('Registro bem-sucedido! Você será redirecionado para a tela de login.');

@@ -39,6 +39,7 @@ export const useGameLogic = () => {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   
   // --- Estados do Diálogo ---
   const [dialogueData, setDialogueData] = useState<DialogueLine[] | null>(null);
@@ -81,6 +82,11 @@ export const useGameLogic = () => {
 
     await fetchNewQuestion(); // Busca a primeira pergunta
     setGameState('BATTLE');
+  };
+
+  // Adicione junto com suas outras funções
+  const toggleSettings = () => {
+    setShowSettings(prevState => !prevState);
   };
 
   const handleAnswer = async (selectedOption: string) => {
@@ -202,5 +208,7 @@ export const useGameLogic = () => {
     handlePauseGame, handleResumeGame,
     // Navegação interna
     handleGoToMainMenu, handleGoToMap, handleStartNewGame,
+    showSettings,
+    toggleSettings,
   };
 };

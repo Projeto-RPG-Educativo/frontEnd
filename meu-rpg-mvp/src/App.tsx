@@ -3,8 +3,7 @@ import { AuthProvider, AuthContext } from './contexts/AuthContext';
 import { useGameLogic } from './hooks/UseGameLogic';
 import { FullscreenProvider } from './contexts/FullscreenContext';
 import Layout from './components/Layout/Layout';
-
-// Importando as páginas da nova estrutura de pastas
+import AuthScreen from './pages/AuthScreen/AuthScreen';
 import LoginScreen from './pages/LoginScreen/LoginScreen';
 import RegisterScreen from './pages/RegisterScreen/RegisterScreen';
 import MainMenu from './pages/MainMenu/MainMenu';
@@ -41,14 +40,13 @@ const App: React.FC = () => {
     handleGoToMainMenu, handleStartNewGame
   } = useGameLogic();
 
+  console.log('--- App Renderizou ---'); 
+  console.log('isLoggedIn:', isLoggedIn); 
+  console.log('gameState:', gameState); 
+
   // Lógica de renderização principal: ou mostra Login/Registro, ou mostra o Jogo.
   if (!isLoggedIn) {
-    const [isRegistering, setIsRegistering] = useState(false);
-    if (isRegistering) {
-      return <RegisterScreen onRegisterSuccess={() => setIsRegistering(false)} onGoToLogin={() => setIsRegistering(false)} />;
-    } else {
-      return <LoginScreen onLoginSuccess={login} onGoToRegister={() => setIsRegistering(true)} />;
-    }
+  return <AuthScreen />;
   }
 
   // --- Renderização do Jogo para um usuário LOGADO ---
